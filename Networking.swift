@@ -9,16 +9,24 @@ import Foundation
 import CoreLocation
 import SwiftUI
 
+/*
+ This class is responsible for acquiring device location and using this information
+ to request weather information specific to that loction. Three API endpoints are used
+ in order to retreive weather information, a location name, and current air quality
+ respectively.
+ */
+
 class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
     
-    @Published var weatherResponse: WeatherResponse?
-    @Published var locationString: LocationResponse?
-    @Published var currAQI: AQIresponse?
+    @Published var weatherResponse: WeatherResponse?  // contains weather information
+    @Published var locationString: LocationResponse?  // contains a string describing current location
+    @Published var currAQI: AQIresponse?  // contains current air quality index
+    
+    @Published var locationStatus: CLAuthorizationStatus?  // describes user assigned location permissions
+    @Published var lastLocation: CLLocation?  // contains information about the user's last location
 
     private let locationManager = CLLocationManager()
-    @Published var locationStatus: CLAuthorizationStatus?
-    @Published var lastLocation: CLLocation?
-    
+
     override init() {
         super.init()
         locationManager.delegate = self
@@ -27,6 +35,9 @@ class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.startUpdatingLocation()
     }
     
+    
+    /* A computed property to determine the user's current assigned location
+     preference*/
     var statusString: String {
         guard let status = locationStatus else {
             return "unknown"
@@ -42,6 +53,8 @@ class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
     
+    /* A computed property used to determine how the UI should respond to
+     various permission states*/
     var permissions: Bool {
         switch statusString {
         case "notDetermined": return false
@@ -57,6 +70,10 @@ class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationStatus = status
     }
     
+    
+    /* This function is automatically called when the device location is updated.
+     Once location is updated, all endpoints are contacted in order to get information
+     at the updated location*/
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         lastLocation = location
@@ -66,6 +83,8 @@ class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.stopUpdatingLocation()
     }
     
+    
+    /* Used to obtain all weather related information at a given location*/
     func getMainWeather(_ lat: CLLocationDegrees, _ lon: CLLocationDegrees) {
         if let loc = URL(string: "https://api.openweathermap.org/data/2.5/onecall?appid=redacted&exclude=minutely&units=imperial&lat=\(lat)&lon=\(lon)") {
             let session = URLSession(configuration: .default)
@@ -91,6 +110,8 @@ class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
     
+    
+    /* Used to obtain a string describing the current device location*/
     func getLocationString(_ lat: CLLocationDegrees, _ lon: CLLocationDegrees) {
         if let loc = URL(string: "https://api.openweathermap.org/data/2.5/weather?appid=redacted&exclude=minutely&units=imperial&lat=\(lat)&lon=\(lon)") {
             let session = URLSession(configuration: .default)
@@ -116,6 +137,8 @@ class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
     
+    
+    /* Used to obtain the current Air Quality Index at the current device location*/
     func getAQI(_ lat: CLLocationDegrees, _ lon: CLLocationDegrees) {
         if let loc = URL(string: "https://api.openweathermap.org/data/2.5/air_pollution?appid=redacted&exclude=minutely&lat=\(lat)&lon=\(lon)") {
             let session = URLSession(configuration: .default)
