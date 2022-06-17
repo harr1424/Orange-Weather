@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/* A View describing the daily forecast for a given location. */
 struct DailyWeatherView: View {
     
     var daily: [Daily]?

@@ -7,6 +7,9 @@
 
 import Foundation
 import Network
+
+/* This class is responsible for determining the connectivity
+ status of a user's device. */
 class NetworkStatus: ObservableObject {
     
     @Published var isConnected = false

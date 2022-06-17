@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/* A View used to display weather infromation specific to a given hour.
+ Multiple HourlyView Views will be displayed in a list. */
 struct HourlyView: View {
     let calendar = Calendar.current
     var hourly: Hourly

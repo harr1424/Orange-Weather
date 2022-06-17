@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/* A View used to display weather infromation specific to a given day.
+ Multiple DailyView Views will be displayed in a list. */
 struct DailyView: View {
     let calendar = Calendar.current
     var daily: Daily

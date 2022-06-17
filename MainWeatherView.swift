@@ -8,10 +8,17 @@
 import SwiftUI
 import CoreLocation
 
+/* The initial View shown in the application. From here, a user
+ is able to see current weather information as well as navigate to other
+ views of the app. If a user is not connected to the internet, or
+ has not granted location permissions to this app, the view will
+ display an error message. */
 struct MainWeatherView: View {
     
-    @StateObject var network = Networking()
-    @StateObject var networkConn = NetworkStatus()
+    /* State objects are used here as opposed to ObservedObjetcs since
+     these objects are being instantiated in this class*/
+    @StateObject var network = Networking()  // object containing location and weather information
+    @StateObject var networkConn = NetworkStatus()  // object containing network connectivity status
         
     var lat: CLLocationDegrees {
         return self.network.lastLocation?.coordinate.latitude ?? 0
@@ -34,6 +41,7 @@ struct MainWeatherView: View {
     
     var body: some View {
         
+        // If a user is not connected to the internet
         if !networkConn.isConnected {
             Image(systemName: "antenna.radiowaves.left.and.right")
                 .resizable()
@@ -50,6 +58,7 @@ struct MainWeatherView: View {
             .padding()
         }
         
+        // If a user has not granted location permissions while the app is in use
         else if !network.permissions {
             Image(systemName: "tornado")
                 .resizable()
@@ -66,7 +75,7 @@ struct MainWeatherView: View {
             .multilineTextAlignment(.center)
             .padding()
             
-        } else {
+        } else {  // Display the intended view
             
             NavigationView {
                 VStack {
@@ -143,6 +152,9 @@ struct MainWeatherView: View {
                 .navigationTitle(locationString)
                 .environmentObject(network)
                 .onAppear {
+                    /* Depending upon netowrk latency, the weather information, location string, and air quality index
+                     may not have been retrieved and/or decoded by the time the view appears. If lat and lon are still nil,
+                     update the UI*/
                     if lat == 0 && lon == 0 {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                             self.update(lat: lat, lon: lon)

@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/* A View used to display weather alert infromation.
+ At least one AlertView View will be displayed in a list. */
 struct AlertView: View {
     var alert: Alert
     var body: some View {

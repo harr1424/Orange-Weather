@@ -9,8 +9,12 @@ import Foundation
 import CoreLocation
 import SwiftUI
 
+/* This struct contains helper methods useful for formatting weather information and
+ for programmatically enhancing the UI*/
 struct WeatherModel {
     
+    /* Given an integer representing a weather condition,
+     will return a String corresponding to an SF Symbol to be displayed. */
     static func getConditionName(weatherID: Int) -> String {
         switch weatherID {
         case 200..<300:
@@ -50,6 +54,8 @@ struct WeatherModel {
         }
     }
     
+    /* Given an integer representing a weather condition, will return
+     a color used to color an SF Symbol. */
     static func getIconColor(weatherID: Int) -> Color {
         if weatherID < 721 {
             return .gray
@@ -66,6 +72,8 @@ struct WeatherModel {
         }
     }
     
+    /* Given a Double corresponding to a Ultra Violet Index, will return
+     a String describing the intensity of the current index. */
     static func getUvIndexCategory(uvIndex: Double) -> String {
         if uvIndex < 2 {
             return "Low"
@@ -80,12 +88,16 @@ struct WeatherModel {
         }
     }
     
+    /* Given a Double describing a wind direction in degrees, will return a String
+     representation of the wind direction using cardinal direction abbreviations. */
     static func getWindDirection(degree: Double) -> String {
         let val = floor((degree / 22.5) + 0.5)
         let directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
         return directions[Int(val.truncatingRemainder(dividingBy: 16))]
     }
     
+    /* Given an Integer representing the current Air Quality Index, will return
+     a String description of the current index. */
     static func getAQIstring(aqi: Int) -> String {
         switch aqi {
         case 1: return "Good"
@@ -97,6 +109,8 @@ struct WeatherModel {
         }
     }
     
+    /* Given an Integer representing the hour of a day in 24 hour format,
+     will return a String representation of the time in 12 hour format. */
     static func getTimeAs12hr(hour: Int) -> String {
         switch hour {
         case 0: return "12:00 AM"
@@ -128,6 +142,8 @@ struct WeatherModel {
         }
     }
     
+    /* Given an Integer representing the day of the week, will return a
+     String describing the week day as a proper noun. */
     static func getWeekDay(day: Int) -> String {
         switch day {
         case 1: return "Sunday"
@@ -141,6 +157,9 @@ struct WeatherModel {
         }
     }
     
+    /*  Given a Double representing a temperature, will return a String
+     appropriate to the most likely form of precipitation considering
+     the temperature. */
     static func getRainorSnow(temp: Double) -> String {
         if temp < 40.0 {
             return "snow"
@@ -150,6 +169,8 @@ struct WeatherModel {
     }
     
 }
+
+/* The following structs are used to decode the JSON responses from the API*/
 
 struct WeatherResponse: Decodable{
     let current: Current

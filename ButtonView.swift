@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/* A struct to define how buttons will appear throughout the application. */
 struct NavButton {
     var text: String
 }

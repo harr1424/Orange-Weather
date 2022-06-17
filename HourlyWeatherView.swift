@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/* A View describing the hourly forecast for a given location. */
 struct HourlyWeatherView: View {
     
     var hourly: [Hourly]?

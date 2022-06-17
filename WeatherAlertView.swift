@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/* A View desribing any current weather alerts at a
+ device location. If not alerts are active, a message
+ stating so will be shown instead. */
 struct WeatherAlertView: View {
     
     var alerts: [Alert]?
