@@ -10,23 +10,11 @@ import SwiftUI
 /* A View used to display weather infromation specific to a given day.
  Multiple DailyView Views will be displayed in a list. */
 struct DailyView: View {
+    
+    @AppStorage("Units") var units = (UserDefaults.standard.string(forKey: "Units") ?? "imperial")
+
     let calendar = Calendar.current
     var daily: Daily
-    
-    var uvColor: Color {
-        if daily.uvi < 2 {
-            return .blue
-        }
-        else if daily.uvi < 5 {
-            return .orange
-        }
-        else if daily.uvi < 8 {
-            return .red
-        }
-        else {
-            return .purple
-        }
-    }
     
     var body: some View {
         HStack {
@@ -36,6 +24,7 @@ struct DailyView: View {
                     .fontWeight(.bold)
                 Spacer()
                 HStack {
+                    if units == "imperial" {
                 Text("\(daily.temp.max, specifier: "%.0f")°F")
                     .fontWeight(.bold)
                     .foregroundColor(.red)
@@ -43,10 +32,19 @@ struct DailyView: View {
                     Text("\(daily.temp.min, specifier: "%.0f")°F")
                         .fontWeight(.bold)
                         .foregroundColor(.blue)
+                    } else {
+                        Text("\(WeatherModel.fahrenheitToCelsius(degreesF: daily.temp.max) , specifier: "%.0f")°C")
+                            .fontWeight(.bold)
+                            .foregroundColor(.red)
+                            Spacer()
+                        Text("\(WeatherModel.fahrenheitToCelsius(degreesF: daily.temp.min) , specifier: "%.0f")°C")
+                                .fontWeight(.bold)
+                                .foregroundColor(.blue)
+                    }
                 }
                 Spacer()
                 Text("Max UV: \(daily.uvi, specifier: "%.0f")")
-                    .foregroundColor(uvColor)
+                    .foregroundColor(WeatherModel.getUvColor(uvIndex: daily.uvi))
                 Spacer()
             }
             Image(systemName:  WeatherModel.getConditionName(weatherID: daily.weather[0].id))
@@ -56,7 +54,11 @@ struct DailyView: View {
                 .foregroundColor(WeatherModel.getIconColor(weatherID: daily.weather[0].id))
             VStack {
                 Spacer()
-                Text("Wind \(daily.wind_speed, specifier: "%.0f") mph from \(WeatherModel.getWindDirection(degree: daily.wind_deg))")
+                if units == "imperial" {
+                Text("Wind \(daily.wind_speed, specifier: "%.0f") mph \(WeatherModel.getWindDirection(degree: daily.wind_deg))")
+                } else {
+                    Text("Wind \(WeatherModel.mphToKmh(speedMph: daily.wind_speed) , specifier: "%.0f") kmh \(WeatherModel.getWindDirection(degree: daily.wind_deg))")
+                }
                 Spacer()
                 Text("\(daily.pop * 100, specifier: "%.0f")% chance of \(WeatherModel.getRainorSnow(temp: daily.temp.min))")
                 Spacer()

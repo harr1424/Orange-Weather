@@ -19,7 +19,9 @@ struct MainWeatherView: View {
      these objects are being instantiated in this class*/
     @StateObject var network = Networking()  // object containing location and weather information
     @StateObject var networkConn = NetworkStatus()  // object containing network connectivity status
-        
+    
+    @AppStorage("Units") private var units = "imperial"
+    
     var lat: CLLocationDegrees {
         return self.network.lastLocation?.coordinate.latitude ?? 0
     }
@@ -102,50 +104,96 @@ struct MainWeatherView: View {
                             Text("Dew Point")
                                 .fontWeight(.bold)
                                 .font(.system(size: 24))
-                            Text("UV Index")
-                                .fontWeight(.bold)
-                                .font(.system(size: 24))
-                            Text("Air Quality")
-                                .fontWeight(.bold)
-                                .font(.system(size: 24))
+                            if let response = network.weatherResponse {
+                                Text("UV Index")
+                                    .fontWeight(.bold)
+                                    .font(.system(size: 24))
+                                    .foregroundColor(WeatherModel.getUvColor(uvIndex: response.current.uvi))
+                            } else {
+                                Text("UV Index")
+                                    .fontWeight(.bold)
+                                    .font(.system(size: 24))
+                            }
+                            if let response = network.currAQI {
+                                Text("Air Quality")
+                                    .fontWeight(.bold)
+                                    .font(.system(size: 24))
+                                    .foregroundColor(WeatherModel.getAQIColor(aqi:response.list[0].main.aqi))
+                            } else {
+                                Text("Air Quality")
+                                    .fontWeight(.bold)
+                                    .font(.system(size: 24))
+                            }
                             Spacer()
                         }
                         
                         VStack {
                             if let response = network.weatherResponse {
+                                if units == "imperial"{
                                 Text("\(response.current.temp, specifier: "%.0f")°F")
                                     .fontWeight(.bold)
                                     .font(.system(size: 24))
-                                Text("\(response.current.wind_speed, specifier: "%.0f") mph from \(WeatherModel.getWindDirection(degree: response.current.wind_speed))")
+                                } else {
+                                    Text("\(WeatherModel.fahrenheitToCelsius(degreesF: response.current.temp) , specifier: "%.0f")°C")
+                                        .fontWeight(.bold)
+                                        .font(.system(size: 24))
+                                }
+                                if units == "imperial"{
+                                Text("\(response.current.wind_speed, specifier: "%.0f") mph \(WeatherModel.getWindDirection(degree: response.current.wind_speed))")
                                     .fontWeight(.bold)
                                     .font(.system(size: 24))
+                                } else {
+                                    Text("\(WeatherModel.mphToKmh(speedMph: response.current.wind_speed) , specifier: "%.0f") kmh \(WeatherModel.getWindDirection(degree: response.current.wind_speed))")
+                                        .fontWeight(.bold)
+                                        .font(.system(size: 24))
+                                }
                                 Text("\(response.current.humidity, specifier: "%.0f") %")
                                     .fontWeight(.bold)
                                     .font(.system(size: 24))
+                                if units == "imperial" {
                                 Text("\(response.current.dew_point, specifier: "%.2f") °F")
                                     .fontWeight(.bold)
                                     .font(.system(size: 24))
+                                } else {
+                                    Text("\(WeatherModel.fahrenheitToCelsius(degreesF: response.current.dew_point) , specifier: "%.2f") °C")
+                                        .fontWeight(.bold)
+                                        .font(.system(size: 24))
+                                }
                                 Text("\(response.current.uvi, specifier: "%.0f")  \(WeatherModel.getUvIndexCategory(uvIndex: response.current.uvi))")
                                     .fontWeight(.bold)
                                     .font(.system(size: 24))
+                                    .foregroundColor(WeatherModel.getUvColor(uvIndex: response.current.uvi))
                             }
                             if let response = network.currAQI {
                                 Text(WeatherModel.getAQIstring(aqi: response.list[0].main.aqi))
                                     .fontWeight(.bold)
                                     .font(.system(size: 24))
+                                    .foregroundColor(WeatherModel.getAQIColor(aqi: response.list[0].main.aqi))
                             }
                             Spacer()
                         }
                     }
                     HStack {
-                        NavigationLink(destination: HourlyWeatherView(hourly: network.weatherResponse?.hourly)) {
-                            ButtonView(text: "Hourly")
-                        }
-                        NavigationLink(destination: WeatherAlertView(alerts: network.weatherResponse?.alerts)) {
-                            ButtonView(text: "Alerts")
-                        }
-                        NavigationLink(destination: DailyWeatherView(daily: network.weatherResponse?.daily)) {
-                            ButtonView(text: "Daily")
+                        if let response = network.weatherResponse {
+                            NavigationLink(destination: HourlyWeatherView(hourly: network.weatherResponse?.hourly)) {
+                                ButtonView(text: "Hourly")
+                            }
+                            NavigationLink(destination: WeatherAlertView(alerts: network.weatherResponse?.alerts)) {
+                                ButtonView(text: "Alerts \(Int(response.alerts?.count ?? 0))")
+                            }
+                            NavigationLink(destination: DailyWeatherView(daily: network.weatherResponse?.daily)) {
+                                ButtonView(text: "Daily")
+                            }
+                        } else {
+                            NavigationLink(destination: HourlyWeatherView(hourly: network.weatherResponse?.hourly)) {
+                                ButtonView(text: "Hourly")
+                            }
+                            NavigationLink(destination: WeatherAlertView(alerts: network.weatherResponse?.alerts)) {
+                                ButtonView(text: "Alerts")
+                            }
+                            NavigationLink(destination: DailyWeatherView(daily: network.weatherResponse?.daily)) {
+                                ButtonView(text: "Daily")
+                            }
                         }
                     }
                 }
@@ -161,6 +209,19 @@ struct MainWeatherView: View {
                         })
                     }
                     self.update(lat: lat, lon: lon)
+                }
+                .toolbar {
+                    if units == "imperial"{
+                        Button("Metric") {
+                            // display weather info using metric units
+                            units = "metric"
+                        }
+                    } else {
+                        Button("Imperial") {
+                            // display weather info using imprial units
+                            units = "imperial"
+                        }
+                    }
                 }
             }
         }
