@@ -13,10 +13,14 @@ import SwiftUI
  for programmatically enhancing the UI*/
 struct WeatherModel {
     
+    /* Given a double representing a temperature in °F, will return 
+    a double representing the temperature in °C */
     static func fahrenheitToCelsius(degreesF: Double) -> Double {
         return (degreesF - 32) * (5 / 9)
     }
     
+    /* Given a double representing a wind speed in mph, will return 
+     a double representing the wind speed in kmh */ 
     static func mphToKmh(speedMph: Double) -> Double {
         return speedMph * 1.6093440006147
     }
