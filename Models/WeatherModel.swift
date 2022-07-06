@@ -13,6 +13,14 @@ import SwiftUI
  for programmatically enhancing the UI*/
 struct WeatherModel {
     
+    static func fahrenheitToCelsius(degreesF: Double) -> Double {
+        return (degreesF - 32) * (5 / 9)
+    }
+    
+    static func mphToKmh(speedMph: Double) -> Double {
+        return speedMph * 1.6093440006147
+    }
+    
     /* Given an integer representing a weather condition,
      will return a String corresponding to an SF Symbol to be displayed. */
     static func getConditionName(weatherID: Int) -> String {
@@ -88,6 +96,18 @@ struct WeatherModel {
         }
     }
     
+    static func getUvColor(uvIndex: Double) -> Color {
+        if uvIndex < 2 {
+            return .primary
+        } else if uvIndex < 5 {
+            return .orange
+        } else if uvIndex < 8 {
+            return .red
+        } else {
+            return .purple
+        }
+    }
+    
     /* Given a Double describing a wind direction in degrees, will return a String
      representation of the wind direction using cardinal direction abbreviations. */
     static func getWindDirection(degree: Double) -> String {
@@ -106,6 +126,19 @@ struct WeatherModel {
         case 4: return "Poor"
         case 5: return "Very Poor"
         default: return "Not Available"
+        }
+    }
+    
+    /* Given an Integer representing the current Air Quality Index, will return
+     a color representation of the current index. */
+    static func getAQIColor(aqi: Int) -> Color {
+        switch aqi {
+        case 1: return .primary
+        case 2: return .primary
+        case 3: return .orange
+        case 4: return .red
+        case 5: return .purple
+        default: return .primary
         }
     }
     
