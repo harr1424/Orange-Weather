@@ -5,7 +5,6 @@ import WeatherKit
 struct WeatherAlertView: View {
     
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    @Environment(\.requestReview) var requestReview
     
     var userEngagement = UserEngagement()
     
@@ -26,15 +25,6 @@ struct WeatherAlertView: View {
                             AlertView(alert: alert)
                         }
                         .navigationTitle("Alerts")
-                        .onAppear{
-                            userEngagement.points += 1
-                            UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-                            if userEngagement.points > 50 {
-                                DispatchQueue.main.async {
-                                    requestReview()
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -60,15 +50,6 @@ struct WeatherAlertView: View {
                         }
                     Spacer()
                         .navigationTitle("Alerts")
-                        .onAppear{
-                            userEngagement.points += 1
-                            UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-                            if userEngagement.points > 50 {
-                                DispatchQueue.main.async {
-                                    requestReview()
-                                }
-                            }
-                        }
                 }
             }
         }
@@ -82,15 +63,6 @@ struct WeatherAlertView: View {
                         AlertView(alert: alert)
                     }
                     .navigationTitle("Alerts")
-                    .onAppear{
-                        userEngagement.points += 1
-                        UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-                        if userEngagement.points > 50 {
-                            DispatchQueue.main.async {
-                                requestReview()
-                            }
-                        }
-                    }
                 }
                 
             } else {
@@ -109,15 +81,6 @@ struct WeatherAlertView: View {
                         .multilineTextAlignment(.center)
                     Spacer()
                         .navigationTitle("Alerts")
-                        .onAppear{
-                            userEngagement.points += 1
-                            UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-                            if userEngagement.points > 50 {
-                                DispatchQueue.main.async {
-                                    requestReview()
-                                }
-                            }
-                        }
                 }
             }
         }

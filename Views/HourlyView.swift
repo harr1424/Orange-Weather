@@ -4,6 +4,7 @@ import WeatherKit
 struct HourlyView: View {
     
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+    
     var hourly: HourWeather
     
     var body: some View {

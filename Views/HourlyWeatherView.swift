@@ -5,7 +5,6 @@ import WeatherKit
 struct HourlyWeatherView: View {
     
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    @Environment(\.requestReview) var requestReview
     
     var userEngagement = UserEngagement()
     
@@ -23,15 +22,6 @@ struct HourlyWeatherView: View {
                     HourlyView(hourly: forecast)
                 }
                 .navigationTitle("Hourly")
-                .onAppear{
-                    userEngagement.points += 1
-                    UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-                    if userEngagement.points > 50 {
-                        DispatchQueue.main.async {
-                            requestReview()
-                        }
-                    }
-                }
             }
         } else {
             let hourlyForecast = hourly.forecast
@@ -39,15 +29,6 @@ struct HourlyWeatherView: View {
                 HourlyView(hourly: forecast)
             }
             .navigationTitle("Hourly")
-            .onAppear{
-                userEngagement.points += 1
-                UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-                if userEngagement.points > 50 {
-                    DispatchQueue.main.async {
-                        requestReview()
-                    }
-                }
-            }
         }
     }
 }
