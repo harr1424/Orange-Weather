@@ -39,8 +39,8 @@ struct LocationView: View {
                 
                 List {
                     ForEach(savedLocations.all, id: \.self) { saved in
-                        Button(saved) {
-                            getCoordinate(addressString: saved) { coordinates, error in
+                        Button(saved.name) {
+                            getCoordinate(addressString: saved.name) { coordinates, error in
                                 networking.lastLocation = CLLocation(latitude: coordinates.latitude, longitude: coordinates.longitude)
                             }
                             dismiss()

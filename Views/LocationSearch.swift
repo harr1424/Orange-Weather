@@ -50,9 +50,9 @@ struct LocationSearch: View {
                                 if error == nil {
                                     networking.lastLocation = CLLocation(latitude: coordinates.latitude, longitude: coordinates.longitude)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                        savedLocations.all.append(networking.locationString!.locality!)
+                                        let newLocation = Location(name: networking.locationString!.locality!)
+                                        savedLocations.all.append(newLocation)
                                         savedLocations.all = savedLocations.all.unique()
-                                        UserDefaults.standard.set(savedLocations.all, forKey: "SavedLocations")
                                         dismiss()
                                     }
                                 } else {
