@@ -10,5 +10,9 @@ A privacy respecting and ad-free weather application for iOS. This app does not 
 </p>
 
 
+<br>
 
+<p align="center">
+      <img width="400" src="[https://github.com/harr1424/Indoor-Air-Quality/blob/main/images/chart.png](https://github.com/harr1424/Orange-Weather/assets/84741727/19c394d2-becb-404a-b904-94e9a0047319)https://github.com/harr1424/Orange-Weather/assets/84741727/19c394d2-becb-404a-b904-94e9a0047319" alt="A screenshot depicting the app's main view.">
+</p>
 
