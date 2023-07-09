@@ -5,7 +5,6 @@ struct LocationView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var networking: Networking
     @StateObject var savedLocations = SavedLocations()
-    
     @State private var showingSheet = false
     
     var body: some View {
@@ -34,7 +33,7 @@ struct LocationView: View {
                 }
             }
             .sheet(isPresented: $showingSheet) {
-                LocationSearch(networking: networking)
+                LocationSearchView(networking: networking, savedLocations: savedLocations)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

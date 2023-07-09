@@ -6,8 +6,6 @@ struct WeatherAlertView: View {
     
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     
-    var userEngagement = UserEngagement()
-    
     var alerts: [WeatherAlert]?
     
     var body: some View {
@@ -15,74 +13,109 @@ struct WeatherAlertView: View {
         if colorScheme == .light {
             
             if !alerts!.isEmpty {
-                
-                ZStack {
-                    LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
-                        .ignoresSafeArea()
-                    
-                    if let currAlerts = alerts {
-                        List(currAlerts, id: \.detailsURL) { alert in
-                            AlertView(alert: alert)
-                        }
-                        .navigationTitle("Alerts")
-                    }
-                }
+                WeatherAlertViewLight(alerts: alerts)
             }
             
             else {
-                ZStack {
-                    LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
-                        .ignoresSafeArea()
-                    
-                    VStack{
-                        
-                        Image(systemName: "smoke")
-                            .resizable()
-                            .aspectRatio( contentMode: .fit)
-                            .scaleEffect(0.75)
-                            .foregroundColor(.orange)
-                        Text("There are currently no active weather alerts for your location")
-                            .fontWeight(.bold)
-                            .font(.system(size: 24))
-                            .foregroundStyle(.secondary)
-                            .padding(50)
-                            .multilineTextAlignment(.center)
-                        }
-                    Spacer()
-                        .navigationTitle("Alerts")
-                }
+                EmptyAlertListLight()
             }
         }
         
         else {
             
             if !alerts!.isEmpty {
-                
-                if let currAlerts = alerts {
-                    List(currAlerts, id: \.detailsURL) { alert in
-                        AlertView(alert: alert)
-                    }
-                    .navigationTitle("Alerts")
-                }
+                WeatherAlertViewDark(alerts: alerts)
                 
             } else {
-                VStack {
-                    Image(systemName: "smoke")
-                        .resizable()
-                        .aspectRatio( contentMode: .fit)
-                        .scaleEffect(0.75)
-                        .foregroundColor(.orange)
-                    Text("There are currently no active weather alerts for your location")
-                        .fontWeight(.bold)
-                        .font(.system(size: 24))
-                        .foregroundStyle(.secondary)
-                        .padding(50)
-                        .background(.ultraThinMaterial)
-                        .multilineTextAlignment(.center)
-                    Spacer()
-                        .navigationTitle("Alerts")
-                }
+                EmptyAlertListDark()
             }
         }
     }
 }
+
+struct EmptyAlertListLight: View {
+    
+    var body: some View {
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
+                .ignoresSafeArea()
+            
+            VStack{
+                
+                Image(systemName: "smoke")
+                    .resizable()
+                    .aspectRatio( contentMode: .fit)
+                    .scaleEffect(0.75)
+                    .foregroundColor(.orange)
+                Text("There are currently no active weather alerts for your location")
+                    .fontWeight(.bold)
+                    .font(.system(size: 24))
+                    .foregroundStyle(.secondary)
+                    .padding(50)
+                    .multilineTextAlignment(.center)
+            }
+            Spacer()
+                .navigationTitle("Alerts")
+        }
+    }
+}
+
+struct EmptyAlertListDark: View {
+    var body: some View {
+        VStack {
+            Image(systemName: "smoke")
+                .resizable()
+                .aspectRatio( contentMode: .fit)
+                .scaleEffect(0.75)
+                .foregroundColor(.secondary)
+            Text("There are currently no active weather alerts for your location")
+                .fontWeight(.bold)
+                .font(.system(size: 24))
+                .foregroundStyle(.secondary)
+                .padding(50)
+                .background(.ultraThinMaterial)
+                .multilineTextAlignment(.center)
+            Spacer()
+                .navigationTitle("Alerts")
+        }
+    }
+}
+
+struct WeatherAlertViewLight: View {
+    
+    var alerts: [WeatherAlert]?
+    
+    var body: some View {
+        
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
+                .ignoresSafeArea()
+            
+            if let currAlerts = alerts {
+                List(currAlerts, id: \.detailsURL) { alert in
+                    AlertView(alert: alert)
+                }
+                .navigationTitle("Alerts")
+            }
+        }
+        
+    }
+}
+
+struct WeatherAlertViewDark: View {
+    
+    var alerts: [WeatherAlert]?
+    
+    var body: some View {
+        
+        VStack {
+            if let currAlerts = alerts {
+                List(currAlerts, id: \.detailsURL) { alert in
+                    AlertView(alert: alert)
+                }
+                .navigationTitle("Alerts")
+            }
+        }
+    }
+}
+

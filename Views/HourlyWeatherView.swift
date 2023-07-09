@@ -5,9 +5,7 @@ import WeatherKit
 struct HourlyWeatherView: View {
     
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    
-    var userEngagement = UserEngagement()
-    
+        
     var hourly: Forecast<HourWeather>
     
     var body: some View {
@@ -25,6 +23,7 @@ struct HourlyWeatherView: View {
                 .navigationTitle("Hourly")
             }
         } else {
+            
             let hourlyForecast = hourly.futureElements()
             
             List(hourlyForecast, id: \.date) { forecast in

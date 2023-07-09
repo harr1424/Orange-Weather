@@ -1,11 +1,11 @@
 import SwiftUI
 import CoreLocation
 
-struct LocationSearch: View {
+struct LocationSearchView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject var locationService = LocationService()
     @ObservedObject var networking: Networking
-    @ObservedObject var savedLocations = SavedLocations()
+    @ObservedObject var savedLocations: SavedLocations
     @State var showAlert = false
     
     var body: some View{
@@ -34,8 +34,11 @@ struct LocationSearch: View {
                                     networking.lastLocation = CLLocation(latitude: coordinates.latitude, longitude: coordinates.longitude)
                                     DispatchQueue.main.async() {
                                         let newLocation = Location(name: completionResult.city)
+                                        
+                                        // UPDATES not always reflected when sheet is dismissed
                                         savedLocations.all.append(newLocation)
                                         savedLocations.all = savedLocations.all.unique()
+                                        
                                         dismiss()
                                     }
                                 } else {

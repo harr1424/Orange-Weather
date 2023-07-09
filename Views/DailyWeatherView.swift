@@ -5,9 +5,7 @@ import WeatherKit
 struct DailyWeatherView: View {
     
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    
-    var userEngagement = UserEngagement()
-    
+        
     var daily: Forecast<DayWeather>
     
     var body: some View {
