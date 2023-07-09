@@ -3,7 +3,7 @@ import CoreLocation
 import SwiftUI
 import WeatherKit
 
- @MainActor class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
+@MainActor class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     
     @Published var locationString: CLPlacemark?
@@ -33,6 +33,8 @@ import WeatherKit
     @Published var dailyForecast: Forecast<DayWeather>?
     
     @Published var weatherAlerts: [WeatherAlert]?
+    
+    @Published var errorUpdatingWeather = false
     
     override init() {
         super.init()
@@ -80,6 +82,7 @@ import WeatherKit
     // when user taps on current location, set lastLocation to current device location
     public func useCurrentLocation() {
         locationManager.startUpdatingLocation()
+        errorUpdatingWeather = false
     }
     
     func getWeather() async {
@@ -92,8 +95,28 @@ import WeatherKit
             dailyForecast = daily
             weatherAlerts = alerts
             
+            print("First available hourly weather forecast: \(hourly.forecast.first?.date.description(with: .autoupdatingCurrent))")
+            
         } catch {
+            errorUpdatingWeather = true
             print(error.localizedDescription)
+        }
+    }
+    
+    func getCoordinate( addressString : String,
+                        completionHandler: @escaping(CLLocationCoordinate2D, NSError?) -> Void ) {
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(addressString) { (placemarks, error) in
+            if error == nil {
+                if let placemark = placemarks?[0] {
+                    let location = placemark.location!
+                    
+                    completionHandler(location.coordinate, nil)
+                    return
+                }
+            }
+            
+            completionHandler(kCLLocationCoordinate2DInvalid, error as NSError?)
         }
     }
     

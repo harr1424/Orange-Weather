@@ -21,7 +21,7 @@ struct DailyWeatherView: View {
                 List(dailyForecast, id: \.date) { forecast in
                     DailyView(daily: forecast)
                 }
-                .navigationTitle("Hourly")
+                .navigationTitle("Daily")
             }
         } else {
             let dailyForecast = daily.forecast

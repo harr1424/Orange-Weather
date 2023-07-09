@@ -17,14 +17,16 @@ struct HourlyWeatherView: View {
                 LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
                     .ignoresSafeArea()
                 
-                let hourlyForecast = hourly.forecast
+                let hourlyForecast = hourly.futureElements()
+                
                 List(hourlyForecast, id: \.date) { forecast in
-                    HourlyView(hourly: forecast)
+                        HourlyView(hourly: forecast)
                 }
                 .navigationTitle("Hourly")
             }
         } else {
-            let hourlyForecast = hourly.forecast
+            let hourlyForecast = hourly.futureElements()
+            
             List(hourlyForecast, id: \.date) { forecast in
                 HourlyView(hourly: forecast)
             }

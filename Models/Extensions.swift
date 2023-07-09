@@ -51,15 +51,30 @@ extension Wind {
     }
 }
 
+// Remove forecast elements corresponding to the past
+extension Forecast where Element == HourWeather{
+    func futureElements() -> [HourWeather] {
+        var futures = [HourWeather]()
+        
+        for each in self.forecast {
+            if each.date > Date() {
+                futures.append(each)
+            }
+        }
+        
+        return futures
+    }
+}
+
 // Create a set from an array while preserving order
-public extension Array where Element: Hashable {
+extension Array where Element: Hashable {
     func unique() -> [Element] {
         var seen = Set<Element>()
         return filter{ seen.insert($0).inserted }
     }
 }
 
-//Allows all Codable Arrays to be saved using AppStorage
+// Allows all Codable Arrays to be saved using AppStorage
 extension Array: RawRepresentable where Element: Codable {
     public init?(rawValue: String) {
         guard let data = rawValue.data(using: .utf8),

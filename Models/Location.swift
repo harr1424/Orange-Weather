@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 
-struct Location: Identifiable, Codable, Hashable {
-    let id = UUID()
+struct Location: Codable, Hashable {
     var name: String
 }

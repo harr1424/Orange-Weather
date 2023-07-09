@@ -5,58 +5,42 @@ struct LocationSearch: View {
     @Environment(\.dismiss) var dismiss
     @StateObject var locationService = LocationService()
     @ObservedObject var networking: Networking
-    var savedLocations = SavedLocations()
-    
-    @State private var showingSheet = false
-    
-    func getCoordinate( addressString : String,
-                        completionHandler: @escaping(CLLocationCoordinate2D, NSError?) -> Void ) {
-        let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(addressString) { (placemarks, error) in
-            if error == nil {
-                if let placemark = placemarks?[0] {
-                    let location = placemark.location!
-                    
-                    completionHandler(location.coordinate, nil)
-                    return
-                }
-            }
-            
-            completionHandler(kCLLocationCoordinate2DInvalid, error as NSError?)
-        }
-    }
+    @ObservedObject var savedLocations = SavedLocations()
+    @State var showAlert = false
     
     var body: some View{
         Form {
-            Section(header: Text("Search Locations")) {
+            Section {
                 ZStack(alignment: .trailing) {
                     TextField("Search", text: $locationService.queryFragment)
-                    
                 }
+            } header: {
+                Text("Search Locations")
             }
-            Section(header: Text("Results")) {
+            Section {
                 List {
-                    Group { () -> AnyView in
+                    Group {
                         switch locationService.status {
-                        case .noResults: return AnyView(Text("No Results"))
-                        case .error(let description): return AnyView(Text("Error: \(description)"))
-                        default: return AnyView(EmptyView())
+                        case .noResults:  AnyView(Text("No Results"))
+                        case .error(let description):  AnyView(Text("Error: \(description)"))
+                        default:  AnyView(EmptyView())
                         }
-                    }.foregroundColor(Color.gray)
+                    }.foregroundColor(Color.secondary)
                     
                     ForEach(locationService.searchResults, id: \.self) { completionResult in
-                        Button(completionResult.title) {
-                            getCoordinate(addressString: completionResult.title) { coordinates, error in
+                        Button("\(completionResult.city), \(completionResult.country)") {
+                            networking.getCoordinate(addressString: completionResult.city) { coordinates, error in
                                 if error == nil {
                                     networking.lastLocation = CLLocation(latitude: coordinates.latitude, longitude: coordinates.longitude)
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                        let newLocation = Location(name: networking.locationString!.locality!)
+                                    DispatchQueue.main.async() {
+                                        let newLocation = Location(name: completionResult.city)
                                         savedLocations.all.append(newLocation)
                                         savedLocations.all = savedLocations.all.unique()
                                         dismiss()
                                     }
                                 } else {
                                     print("Error setting custom location: \(String(describing: error))")
+                                    showAlert.toggle()
                                 }
                             }
                         }
@@ -64,6 +48,13 @@ struct LocationSearch: View {
                 }
             }
         }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Location not Supported"),
+            message: Text("The location you have chosen is not currently supported."),
+                  dismissButton: .default(Text("OK"))
+            )
+        }
     }
 }
+
 

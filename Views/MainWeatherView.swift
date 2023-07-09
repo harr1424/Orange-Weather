@@ -13,6 +13,8 @@ struct MainWeatherView: View {
     var userEngagement = UserEngagement()
     
     @State private var showingSheet = false
+    @State private var navigationButtonID = UUID()
+    @State private var errorUpdatingWeather = true
     
     var lat: CLLocationDegrees {
         return self.network.lastLocation?.coordinate.latitude ?? 0
@@ -22,7 +24,7 @@ struct MainWeatherView: View {
         return self.network.lastLocation?.coordinate.longitude ?? 0
     }
     
-    public func update(lat: CLLocationDegrees, lon: CLLocationDegrees) async {
+    public func update() async {
         await self.network.getWeather()
     }
     
@@ -62,7 +64,26 @@ struct MainWeatherView: View {
             .multilineTextAlignment(.center)
             .padding()
             
-        } else {
+        }
+        
+        else if network.errorUpdatingWeather {
+            Image(systemName: "smoke")
+                .resizable()
+                .aspectRatio( contentMode: .fit)
+                .scaleEffect(0.75)
+                .foregroundColor(.orange)
+                .alert(isPresented: $errorUpdatingWeather) {
+                    Alert(title: Text("Location not Supported"),
+                          message: Text("The location you have chosen is not currently supported by Apple WeatherKit."),
+                          dismissButton: .default(Text("OK")) {
+                        network.useCurrentLocation()
+                    }
+                    )
+                }
+        }
+        
+        
+        else {
             
             NavigationView {
                 
@@ -78,8 +99,7 @@ struct MainWeatherView: View {
                                     .aspectRatio( contentMode: .fit)
                                     .scaleEffect(0.75)
                                     .foregroundColor(.orange)
-                                
-                                
+                                                                
                                 HStack {
                                     
                                     VStack{
@@ -160,9 +180,9 @@ struct MainWeatherView: View {
                     .navigationTitle(network.locationString?.locality! ?? "Loading")
                     .environmentObject(network)
                     .task {
-                        await self.update(lat: lat, lon: lon)
+                        await self.update()
                         if lat == 0 && lon == 0 {
-                            await self.update(lat: lat, lon: lon)
+                            await self.update()
                         }
                         userEngagement.points += 1
                         UserDefaults.standard.set(userEngagement.points, forKey: "Points")
@@ -177,10 +197,14 @@ struct MainWeatherView: View {
                             Button("Locations") {
                                 showingSheet.toggle()
                             }
+                            .id(self.navigationButtonID)
                         }
                     }
                     .sheet(isPresented: $showingSheet) {
                         LocationView(networking: self.network)
+                            .onDisappear {
+                                self.navigationButtonID = UUID()
+                            }
                     }
                 } else {
                     
@@ -312,9 +336,9 @@ struct MainWeatherView: View {
                     .navigationTitle(network.locationString?.locality! ?? "Loading")
                     .environmentObject(network)
                     .task {
-                        await self.update(lat: lat, lon: lon)
+                        await self.update()
                         if lat == 0 && lon == 0 {
-                            await self.update(lat: lat, lon: lon)
+                            await self.update()
                         }
                         userEngagement.points += 1
                         UserDefaults.standard.set(userEngagement.points, forKey: "Points")
@@ -329,10 +353,20 @@ struct MainWeatherView: View {
                             Button("Locations") {
                                 showingSheet.toggle()
                             }
+                            .id(self.navigationButtonID)
                         }
                     }
                     .sheet(isPresented: $showingSheet) {
                         LocationView(networking: self.network)
+                            .onDisappear {
+                                self.navigationButtonID = UUID()
+                            }
+                    }
+                    .alert(isPresented: $errorUpdatingWeather) {
+                        Alert(title: Text("Location not Supported"),
+                              message: Text("The location you have chosen is not currently supported."),
+                              dismissButton: .default(Text("OK"))
+                        )
                     }
                 }
             }

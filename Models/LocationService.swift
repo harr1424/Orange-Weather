@@ -1,6 +1,12 @@
+
 import Foundation
 import Combine
 import MapKit
+
+struct LocationResult : Hashable {
+    var city: String
+    var country: String
+}
 
 class LocationService: NSObject, ObservableObject {
 
@@ -14,7 +20,7 @@ class LocationService: NSObject, ObservableObject {
 
     @Published var queryFragment: String = ""
     @Published private(set) var status: LocationStatus = .idle
-    @Published private(set) var searchResults: [MKLocalSearchCompletion] = []
+    @Published private(set) var searchResults: [LocationResult] = []
 
     private var queryCancellable: AnyCancellable?
     private let searchCompleter: MKLocalSearchCompleter!
@@ -44,12 +50,64 @@ class LocationService: NSObject, ObservableObject {
 }
 
 extension LocationService: MKLocalSearchCompleterDelegate {
-    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        // Depending on what you're searching, you might need to filter differently or
-        // remove the filter altogether. Filtering for an empty Subtitle seems to filter
-        // out a lot of places and only shows cities and countries.
+    func buildCityTypeA(_ title: [String],_ subtitle: [String])  -> LocationResult {
         
-        self.searchResults = completer.results
+        var newLocation = LocationResult(city: "", country: "")
+        
+        if title.count > 1 && subtitle.count >= 1 {
+            
+            newLocation.city = title.joined(separator: ", ")
+            newLocation.country = subtitle.count == 1 && subtitle[0] != "" ? subtitle.first! : title.last!
+        }
+        
+        return newLocation
+    }
+
+    func buildCityTypeB(_ title: [String],_ subtitle: [String]) -> LocationResult {
+
+        var newLocation = LocationResult(city: "", country: "")
+
+        if title.count >= 1 && subtitle.count == 1 {
+
+            newLocation.city = title.joined(separator: ", ")
+            newLocation.country = subtitle.last!
+        }
+
+        return newLocation
+    }
+    
+    func getCityList(results: [MKLocalSearchCompletion]) -> [LocationResult] {
+        
+        var searchResults: [LocationResult] = []
+        
+        for result in results {
+                        
+            let titleComponents = result.title.components(separatedBy: ", ")
+            let subtitleComponents = result.subtitle.components(separatedBy: ", ")
+            
+            var candidateLocation: LocationResult
+            
+            candidateLocation = buildCityTypeA(titleComponents, subtitleComponents)
+                
+                if candidateLocation.city != "" && candidateLocation.country != "" {
+                    searchResults.append(candidateLocation)
+                }
+            
+            
+            candidateLocation = buildCityTypeB(titleComponents, subtitleComponents)
+
+                if candidateLocation.city != "" && candidateLocation.country != ""{
+
+                    searchResults.append(candidateLocation)
+                }
+            }
+        
+        return searchResults
+    }
+    
+    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        self.searchResults = getCityList(results: completer.results)
+        self.searchResults = self.searchResults.unique()
         self.status = completer.results.isEmpty ? .noResults : .result
     }
 
