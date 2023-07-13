@@ -43,26 +43,27 @@ struct DailyViewLight: View {
                 Spacer()
                 
                 VStack {
-                    Text("Hi: \(daily.highTemperature.formatted())")
+                    Text("Hi: \(daily.highTemperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                         .fontWeight(.bold)
                         .foregroundColor(.pink)
                     
-                    Text("Lo: \(daily.lowTemperature.formatted())")
+                    Text("Lo: \(daily.lowTemperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                         .fontWeight(.bold)
                         .foregroundColor(.blue)
                     
                     Text("\(daily.condition.description)")
                         .foregroundColor(.secondary)
                     
-                    Text("Wind \(daily.wind.speed.formatted()) \(daily.wind.getAbbreviatedDirections())")
+                    Text("Wind \(daily.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(daily.wind.getAbbreviatedDirections())")
                         .foregroundColor(.secondary)
                     
                     Text("UV Index \(daily.uvIndex.value) \(daily.uvIndex.category.description)")
                         .foregroundColor(.secondary)
                     
                     
-                    if (Int(daily.precipitationChance.description) ?? 0 * 100) > 0 {
-                        Text("\((Int(daily.precipitationChance.description) ?? 0) * 100)% chance of \(daily.precipitation.description)")
+                    if (daily.precipitationChance * 100) > 0 {
+        
+                        Text("\(String(format: "%.0f", daily.precipitationChance * 100))% chance of \(daily.getPrecipitationType())")
                             .foregroundColor(.secondary)
                         
                     }
@@ -96,26 +97,27 @@ struct DailyViewDark: View {
             Spacer()
             
             VStack {
-                Text("Hi: \(daily.highTemperature.formatted())")
+                Text("Hi: \(daily.highTemperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                     .fontWeight(.bold)
                     .foregroundColor(.secondary)
                 
-                Text("Lo: \(daily.lowTemperature.formatted())")
+                Text("Lo: \(daily.lowTemperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                     .fontWeight(.bold)
                     .foregroundColor(.secondary)
                 
                 Text("\(daily.condition.description)")
                     .foregroundColor(.secondary)
                 
-                Text("Wind \(daily.wind.speed.formatted()) \(daily.wind.getAbbreviatedDirections())")
+                Text("Wind \(daily.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(daily.wind.getAbbreviatedDirections())")
                     .foregroundColor(.secondary)
                 
                 Text("UV Index \(daily.uvIndex.value) \(daily.uvIndex.category.description)")
                     .foregroundColor(.secondary)
                 
                 
-                if (Int(daily.precipitationChance.description) ?? 0 * 100) > 0 {
-                    Text("\((Int(daily.precipitationChance.description) ?? 0) * 100)% chance of \(daily.precipitation.description)")
+                if (daily.precipitationChance * 100) > 0 {
+    
+                    Text("\(String(format: "%.0f", daily.precipitationChance * 100))% chance of \(daily.getPrecipitationType())")
                         .foregroundColor(.secondary)
                     
                 }

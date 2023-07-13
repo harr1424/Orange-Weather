@@ -1,6 +1,7 @@
 import Foundation
 import WeatherKit
 
+// Format date according to format string 
 extension Date {
     func getFormattedDate(format: String) -> String {
         let dateformat = DateFormatter()
@@ -9,6 +10,7 @@ extension Date {
     }
 }
 
+// Returns abbreviated wind directions
 extension Wind {
     func getAbbreviatedDirections() -> String {
         
@@ -92,5 +94,37 @@ extension Array: RawRepresentable where Element: Codable {
             return "[]"
         }
         return result
+    }
+}
+
+extension DayWeather {
+    func getPrecipitationType() -> String {
+        if self.precipitation.description == "" {
+            if self.lowTemperature.value < 4 {
+                return "snow"
+            }
+            else {
+                return "rain"
+            }
+        }
+        else {
+            return self.precipitation.description
+        }
+    }
+}
+
+extension HourWeather {
+    func getPrecipitationType() -> String {
+        if self.precipitation.description == "" {
+            if self.temperature.value < 4 {
+                return "snow"
+            }
+            else {
+                return "rain"
+            }
+        }
+        else {
+            return self.precipitation.description
+        }
     }
 }

@@ -43,22 +43,23 @@ struct HourlyViewLight: View {
                 Spacer()
                 
                 VStack {
-                    Text("\(hourly.temperature.formatted())")
+                    Text("\(hourly.temperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                         .fontWeight(.bold)
                         .foregroundColor(.secondary)
                     
                     Text("\(hourly.condition.description)")
                         .foregroundColor(.secondary)
                     
-                    Text("Wind \(hourly.wind.speed.formatted()) \(hourly.wind.getAbbreviatedDirections())")
+                    Text("Wind \(hourly.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(hourly.wind.getAbbreviatedDirections())")
                         .foregroundColor(.secondary)
                     
                     Text("UV Index \(hourly.uvIndex.value) \(hourly.uvIndex.category.description)")
                         .foregroundColor(.secondary)
                     
                     
-                    if (Int(hourly.precipitationChance.description) ?? 0 * 100) > 0 {
-                        Text("\((Int(hourly.precipitationChance.description) ?? 0) * 100)% chance of \(hourly.precipitation.description)")
+                    if (hourly.precipitationChance * 100) > 0 {
+        
+                        Text("\(String(format: "%.0f", hourly.precipitationChance * 100))% chance of \(hourly.getPrecipitationType())")
                             .foregroundColor(.secondary)
                         
                     }
@@ -92,22 +93,23 @@ struct HourlyViewDark: View {
             Spacer()
             
             VStack {
-                Text("\(hourly.temperature.formatted())")
+                Text("\(hourly.temperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                     .fontWeight(.bold)
                     .foregroundColor(.secondary)
                 
                 Text("\(hourly.condition.description)")
                     .foregroundColor(.secondary)
                 
-                Text("Wind \(hourly.wind.speed.formatted()) \(hourly.wind.getAbbreviatedDirections())")
+                Text("Wind \(hourly.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(hourly.wind.getAbbreviatedDirections())")
                     .foregroundColor(.secondary)
                 
                 Text("UV Index \(hourly.uvIndex.value) \(hourly.uvIndex.category.description)")
                     .foregroundColor(.secondary)
                 
                 
-                if (Int(hourly.precipitationChance.description) ?? 0 * 100) > 0 {
-                    Text("\((Int(hourly.precipitationChance.description) ?? 0) * 100)% chance of \(hourly.precipitation.description)")
+                if (hourly.precipitationChance * 100) > 0 {
+    
+                    Text("\(String(format: "%.0f", hourly.precipitationChance * 100))% chance of \(hourly.getPrecipitationType())")
                         .foregroundColor(.secondary)
                     
                 }

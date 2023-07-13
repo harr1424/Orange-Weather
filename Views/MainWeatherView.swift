@@ -222,10 +222,10 @@ struct MainWeatherViewLight: View {
                         }
                         
                         VStack {
-                            Text("\(current.temperature.formatted())")
+                            Text("\(current.temperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                                 .fontWeight(.bold)
                                 .font(.system(size: 24))
-                            Text("\(current.apparentTemperature.formatted())")
+                            Text("\(current.apparentTemperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                                 .fontWeight(.bold)
                                 .font(.system(size: 24))
                             Text("\(current.wind.speed.formatted()) \(current.wind.getAbbreviatedDirections())")
@@ -234,7 +234,7 @@ struct MainWeatherViewLight: View {
                             Text("\(current.humidity * 100, specifier: "%.0f") %")
                                 .fontWeight(.bold)
                                 .font(.system(size: 24))
-                            Text("\(current.dewPoint.formatted())")
+                            Text("\(current.dewPoint.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                                 .fontWeight(.bold)
                                 .font(.system(size: 24))
                             Text("\(current.visibility.formatted())")
@@ -330,12 +330,12 @@ struct MainWeatherViewDark: View {
                     }
                     
                     VStack {
-                        Text("\(current.temperature.formatted())")
+                        Text("\(current.temperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
                             .foregroundColor(.secondary)
                         
-                        Text("\(current.apparentTemperature.formatted())")
+                        Text("\(current.apparentTemperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
                             .foregroundColor(.secondary)
@@ -350,7 +350,7 @@ struct MainWeatherViewDark: View {
                             .font(.system(size: 24))
                             .foregroundColor(.secondary)
                         
-                        Text("\(current.dewPoint.formatted())")
+                        Text("\(current.dewPoint.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
                             .foregroundColor(.secondary)
