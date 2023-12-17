@@ -33,7 +33,7 @@ struct LocationSearchView: View {
                                 if error == nil {
                                     networking.lastLocation = CLLocation(latitude: coordinates.latitude, longitude: coordinates.longitude)
                                     DispatchQueue.main.async() {
-                                        let newLocation = Location(name: completionResult.city)
+                                        let newLocation = Location(name: completionResult.city, isFrostAlertEnabled: false)
                                         
                                         // UPDATES not always reflected when sheet is dismissed
                                         savedLocations.all.append(newLocation)

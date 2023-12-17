@@ -95,7 +95,7 @@ import WeatherKit
             dailyForecast = daily
             weatherAlerts = alerts
             
-            print("First available hourly weather forecast: \(hourly.forecast.first?.date.description(with: .autoupdatingCurrent))")
+            print("First available hourly weather forecast: \(String(describing: hourly.forecast.first?.date.description(with: .autoupdatingCurrent)))")
             
         } catch {
             errorUpdatingWeather = true
@@ -140,5 +140,86 @@ import WeatherKit
         })
     }
     
+    func getCoordinatesForApi(addressString: String, completionHandler: @escaping (CLLocationCoordinate2D?, NSError?) -> Void) {
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(addressString) { (placemarks, error) in
+            if error == nil {
+                if let placemark = placemarks?[0] {
+                    let location = placemark.location!
+                    completionHandler(location.coordinate, nil)
+                    return
+                }
+            }
+            
+            completionHandler(nil, error as NSError?)
+        }
+    }
+
+    func preferredTemperatureUnit() -> String {
+        let locale = Locale.current
+        if let countryCode = locale.region?.identifier {
+            let fahrenheitCountries = ["US", "BS", "BZ", "KY", "PW"]
+            
+            if fahrenheitCountries.contains(countryCode) {
+                return "F"
+            }
+        }
+        
+        // Default to Celsius
+        return "C"
+    }
     
+    func updateFrostAlert(location: Location) {
+        let enable = location.isFrostAlertEnabled
+        let endpoint = enable ? "add_location" : "remove_location"
+        let url = URL(string: ApiServer + endpoint)!
+        
+        getCoordinatesForApi(addressString: location.name) { coordinates, error in
+            guard let coordinates = coordinates else {
+                print("Error getting coordinates: \(String(describing: error))")
+                return
+            }
+            
+            guard TokenManager.shared.deviceToken != nil else {
+                print("Device token was found to be nil!")
+                return
+            }
+            
+            let parameters: [String: Any] = [
+                "token": TokenManager.shared.deviceToken!,
+                "location": [
+                    "latitude": String(coordinates.latitude),
+                    "longitude": String(coordinates.longitude),
+                    "name": location.name,
+                    "unit": self.preferredTemperatureUnit()
+                ]
+            ]
+        
+            print("Attempting to add or remove the following location: ", parameters)
+            var request = URLRequest(url: url)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "POST"
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+            } catch {
+                print("Error encoding JSON: \(error)")
+                return
+            }
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    print("Error initiating data task: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse,
+                      (httpResponse.statusCode == 201)
+                else {
+                    print("Invalid response from server")
+                    return
+                }
+            }.resume()
+        }
+    }
 }

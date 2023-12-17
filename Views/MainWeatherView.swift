@@ -29,7 +29,6 @@ struct MainWeatherView: View {
     
     var body: some View {
         
-        // If a user is not connected to the internet
         if !networkConn.isConnected {
             NoNetworkView()
         }
@@ -43,74 +42,92 @@ struct MainWeatherView: View {
         else if network.errorUpdatingWeather {
             ErrorUpdatingWeatherView(network: network)
         }
-
+        
         else {
             NavigationView {
                 
                 if colorScheme == .light{
                     MainWeatherViewLight(network: network)
-                    .navigationTitle(network.locationString?.locality! ?? "Loading")
-                    .environmentObject(network)
-                    .task {
-                        await self.update()
-                        if lat == 0 && lon == 0 {
+                        .navigationTitle(network.locationString?.locality! ?? "Loading")
+                        .environmentObject(network)
+                        .task {
                             await self.update()
-                        }
-                        userEngagement.points += 1
-                        UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-                        if userEngagement.points > 50 {
-                            DispatchQueue.main.async {
-                                requestReview()
+                            if lat == 0 && lon == 0 {
+                                await self.update()
+                            }
+                            userEngagement.points += 1
+                            UserDefaults.standard.set(userEngagement.points, forKey: "Points")
+                            if userEngagement.points > 50 {
+                                DispatchQueue.main.async {
+                                    requestReview()
+                                }
                             }
                         }
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            Button("Locations") {
-                                showingSheet.toggle()
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button("Locations") {
+                                    showingSheet.toggle()
+                                }
+                                .id(self.navigationButtonID)
                             }
-                            .id(self.navigationButtonID)
+                            
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                NavigationLink(destination: SettingsView(networking: network)) {
+                                    Image(systemName: "gearshape")
+                                        .imageScale(.large)
+                                }
+                            }
                         }
-                    }
-                    .sheet(isPresented: $showingSheet) {
-                        LocationView(networking: self.network)
-                            .onDisappear {
-                                self.navigationButtonID = UUID()
-                            }
-                    }
+                    
+                    
+                        .sheet(isPresented: $showingSheet) {
+                            LocationView(networking: self.network)
+                                .onDisappear {
+                                    self.navigationButtonID = UUID()
+                                }
+                        }
                 }
                 
                 else {
                     MainWeatherViewDark(network: network)
-                    .navigationTitle(network.locationString?.locality! ?? "Loading")
-                    .environmentObject(network)
-                    .task {
-                        await self.update()
-                        if lat == 0 && lon == 0 {
+                        .navigationTitle(network.locationString?.locality! ?? "Loading")
+                        .environmentObject(network)
+                        .task {
                             await self.update()
-                        }
-                        userEngagement.points += 1
-                        UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-                        if userEngagement.points > 50 {
-                            DispatchQueue.main.async {
-                                requestReview()
+                            if lat == 0 && lon == 0 {
+                                await self.update()
+                            }
+                            userEngagement.points += 1
+                            UserDefaults.standard.set(userEngagement.points, forKey: "Points")
+                            if userEngagement.points > 50 {
+                                DispatchQueue.main.async {
+                                    requestReview()
+                                }
                             }
                         }
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            Button("Locations") {
-                                showingSheet.toggle()
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button("Locations") {
+                                    showingSheet.toggle()
+                                }
+                                .id(self.navigationButtonID)
                             }
-                            .id(self.navigationButtonID)
+                            
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                NavigationLink(destination: SettingsView(networking: network)) {
+                                    Image(systemName: "gearshape")
+                                        .imageScale(.large)
+                                }
+                            }
                         }
-                    }
-                    .sheet(isPresented: $showingSheet) {
-                        LocationView(networking: self.network)
-                            .onDisappear {
-                                self.navigationButtonID = UUID()
-                            }
-                    }
+                    
+                    
+                        .sheet(isPresented: $showingSheet) {
+                            LocationView(networking: self.network)
+                                .onDisappear {
+                                    self.navigationButtonID = UUID()
+                                }
+                        }
                 }
             }
         }
@@ -177,7 +194,7 @@ struct ErrorUpdatingWeatherView: View {
 
 struct MainWeatherViewLight: View {
     @ObservedObject var network: Networking
-
+    
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
@@ -273,7 +290,7 @@ struct MainWeatherViewLight: View {
 
 struct MainWeatherViewDark: View {
     @ObservedObject var network: Networking
-
+    
     var body: some View {
         VStack {
             
