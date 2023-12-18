@@ -35,7 +35,6 @@ struct LocationSearchView: View {
                                     DispatchQueue.main.async() {
                                         let newLocation = Location(name: completionResult.city, isFrostAlertEnabled: false)
                                         
-                                        // UPDATES not always reflected when sheet is dismissed
                                         savedLocations.all.append(newLocation)
                                         savedLocations.all = savedLocations.all.unique()
                                         
