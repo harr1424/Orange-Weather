@@ -3,7 +3,7 @@ import CoreLocation
 import SwiftUI
 import WeatherKit
 
-@MainActor class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
+class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     
     @Published var locationString: CLPlacemark?
@@ -13,7 +13,7 @@ import WeatherKit
     @Published public var lastLocation: CLLocation? {
         didSet {
             Task {
-                getLocationString() { placemark in
+                await getLocationString() { placemark in
                     self.locationString = placemark
                 }
                 locationManager.stopUpdatingLocation()
@@ -86,20 +86,21 @@ import WeatherKit
     }
     
     func getWeather() async {
-        do {
-            
-            let (current, hourly, daily, alerts) = try await weatherService.weather(for: self.lastLocation!, including: .current, .hourly, .daily, .alerts)
-            
-            currentWeather = current
-            hourlyForecast = hourly
-            dailyForecast = daily
-            weatherAlerts = alerts
-            
-            print("First available hourly weather forecast: \(String(describing: hourly.forecast.first?.date.description(with: .autoupdatingCurrent)))")
-            
-        } catch {
-            errorUpdatingWeather = true
-            print(error.localizedDescription)
+        if let location = self.lastLocation {
+            do {
+                let (current, hourly, daily, alerts) = try await weatherService.weather(for: location, including: .current, .hourly, .daily, .alerts)
+
+                DispatchQueue.main.async {
+                    self.currentWeather = current
+                    self.hourlyForecast = hourly
+                    self.dailyForecast = daily
+                    self.weatherAlerts = alerts
+                }
+            } catch {
+                // Handle the error if necessary
+                errorUpdatingWeather = true
+                print("Error fetching weather: \(error)")
+            }
         }
     }
     
@@ -195,6 +196,7 @@ import WeatherKit
                 ]
             ]
         
+            print("DEVICE: \(String(describing: TokenManager.shared.deviceToken))")
             print("Attempting to add or remove the following location: ", parameters)
             var request = URLRequest(url: url)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")

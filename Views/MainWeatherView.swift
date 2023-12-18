@@ -50,9 +50,9 @@ struct MainWeatherView: View {
                     MainWeatherViewLight(network: network)
                         .navigationTitle(network.locationString?.locality! ?? "Loading")
                         .environmentObject(network)
-                        .task {
+                        .task(priority: .userInitiated) {
                             await self.update()
-                            if lat == 0 && lon == 0 {
+                            if network.locationString == nil {
                                 await self.update()
                             }
                             userEngagement.points += 1
@@ -92,9 +92,9 @@ struct MainWeatherView: View {
                     MainWeatherViewDark(network: network)
                         .navigationTitle(network.locationString?.locality! ?? "Loading")
                         .environmentObject(network)
-                        .task {
+                        .task(priority: .userInitiated) {
                             await self.update()
-                            if lat == 0 && lon == 0 {
+                            if network.locationString == nil {
                                 await self.update()
                             }
                             userEngagement.points += 1
@@ -130,6 +130,7 @@ struct MainWeatherView: View {
                         }
                 }
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
     }
 }

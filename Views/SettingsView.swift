@@ -25,6 +25,8 @@ struct SettingsView: View {
                 .onDelete { indexSet in
                     savedLocations.deleteLocation(at: indexSet)
                 }
+                                
+                Link("Frost Alerts are made possible using data from Open Meteo", destination: URL(string: "https://open-meteo.com")!)
             }
         }
     }
