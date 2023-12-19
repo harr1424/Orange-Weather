@@ -29,7 +29,7 @@ struct LocationView: View {
                         }
                         .font(.title3)
                     }
-                    .onDelete(perform: savedLocations.deleteLocation)
+                    .onDelete(perform: deleteLocation)
                 }
             }
             .sheet(isPresented: $showingSheet) {
@@ -45,6 +45,14 @@ struct LocationView: View {
                 }
             }
             .navigationTitle("Locations")
+        }
+    }
+    
+    func deleteLocation(at offsets: IndexSet) {
+        for offset in offsets {
+            let location = savedLocations.all[offset]
+            networking.deleteLocation(location: location)
+            savedLocations.all.remove(at: offset)
         }
     }
 }
