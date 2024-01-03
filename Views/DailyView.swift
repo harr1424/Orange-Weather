@@ -11,10 +11,12 @@ struct DailyView: View {
         
         if colorScheme == .light {
             DailyViewLight(daily: daily)
+                .cornerRadius(10)
         }
         
         else {
             DailyViewDark(daily: daily)
+                .cornerRadius(10)
         }
     }
 }
@@ -24,8 +26,9 @@ struct DailyViewLight: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.white, .orange]),  startPoint: UnitPoint(x: 0.3, y: 0.4), endPoint: .bottom)
                 .ignoresSafeArea()
+
             HStack {
                 VStack{
                     Text("\(daily.date.getFormattedDate(format: "EEEE"))")
@@ -34,9 +37,8 @@ struct DailyViewLight: View {
                     Image(systemName: daily.symbolName)
                         .resizable()
                         .aspectRatio( contentMode: .fit)
-                        .scaleEffect(0.5)
+                        .scaleEffect(0.9)
                         .foregroundColor(.secondary)
-                        .frame(width: 100)
                     Spacer()
                 }
                 
@@ -45,34 +47,31 @@ struct DailyViewLight: View {
                 VStack {
                     Text("Hi: \(daily.highTemperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                         .fontWeight(.bold)
-                        .foregroundColor(.pink)
-                    
+                        .foregroundColor(.secondary)
+
                     Text("Lo: \(daily.lowTemperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                         .fontWeight(.bold)
-                        .foregroundColor(.blue)
-                    
-                    Text("\(daily.condition.description)")
+                        .foregroundColor(.secondary)
+
+                    Text("\(daily.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(daily.wind.getAbbreviatedDirections())")
                         .foregroundColor(.secondary)
                     
-                    Text("Wind \(daily.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(daily.wind.getAbbreviatedDirections())")
-                        .foregroundColor(.secondary)
-                    
-                    Text("UV Index \(daily.uvIndex.value) \(daily.uvIndex.category.description)")
+                    Text("UV \(daily.uvIndex.value) \(daily.uvIndex.category.description)")
                         .foregroundColor(.secondary)
                     
                     
                     if (daily.precipitationChance * 100) > 0 {
         
-                        Text("\(String(format: "%.0f", daily.precipitationChance * 100))% chance of \(daily.getPrecipitationType())")
+                        Text("\(String(format: "%.0f", daily.precipitationChance * 100))% \(daily.getPrecipitationType())")
                             .foregroundColor(.secondary)
                         
                     }
                 }
-                
-                Spacer()
-                
             }
+            .padding()
         }
+        .frame(height: 150)
+        .background(Blur(style: .systemMaterial))
     }
 }
 
@@ -85,12 +84,13 @@ struct DailyViewDark: View {
                 Text("\(daily.date.getFormattedDate(format: "EEEE"))")
                     .fontWeight(.bold)
                     .foregroundColor(.secondary)
+                    .padding(.leading)
                 Image(systemName: daily.symbolName)
                     .resizable()
                     .aspectRatio( contentMode: .fit)
-                    .scaleEffect(0.5)
+                    .scaleEffect(0.9)
                     .foregroundColor(.secondary)
-                    .frame(width: 100)
+                    .padding(.leading)
                 Spacer()
             }
             
@@ -105,28 +105,25 @@ struct DailyViewDark: View {
                     .fontWeight(.bold)
                     .foregroundColor(.secondary)
                 
-                Text("\(daily.condition.description)")
+                Text("\(daily.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(daily.wind.getAbbreviatedDirections())")
                     .foregroundColor(.secondary)
                 
-                Text("Wind \(daily.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(daily.wind.getAbbreviatedDirections())")
-                    .foregroundColor(.secondary)
-                
-                Text("UV Index \(daily.uvIndex.value) \(daily.uvIndex.category.description)")
+                Text("UV \(daily.uvIndex.value) \(daily.uvIndex.category.description)")
                     .foregroundColor(.secondary)
                 
                 
                 if (daily.precipitationChance * 100) > 0 {
     
-                    Text("\(String(format: "%.0f", daily.precipitationChance * 100))% chance of \(daily.getPrecipitationType())")
+                    Text("\(String(format: "%.0f", daily.precipitationChance * 100))% \(daily.getPrecipitationType())")
                         .foregroundColor(.secondary)
                     
                 }
             }
-            
-            Spacer()
-            
+            .padding()
         }
+        .padding()
+        .frame(height: 150)
+        .background(Blur(style: .systemMaterialDark))
     }
 }
-
 

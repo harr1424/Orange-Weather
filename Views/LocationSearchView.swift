@@ -16,6 +16,7 @@ struct LocationSearchView: View {
                 }
             } header: {
                 Text("Search Locations")
+                    .font(.headline)
             }
             Section {
                 List {
@@ -50,6 +51,7 @@ struct LocationSearchView: View {
                 }
             }
         }
+        .accentColor(Color.secondary)
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Location not Supported"),
             message: Text("The location you have chosen is not currently supported."),

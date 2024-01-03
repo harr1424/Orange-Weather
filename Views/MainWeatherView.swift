@@ -57,11 +57,11 @@ struct MainWeatherView: View {
                             }
                             userEngagement.points += 1
                             UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-                            if userEngagement.points > 50 {
-                                DispatchQueue.main.async {
-                                    requestReview()
-                                }
-                            }
+//                            if userEngagement.points > 50 {
+//                                DispatchQueue.main.async {
+//                                    requestReview()
+//                                }
+//                            }
                         }
                         .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
@@ -81,7 +81,7 @@ struct MainWeatherView: View {
                     
                     
                         .sheet(isPresented: $showingSheet) {
-                            LocationView(networking: self.network)
+                            LocationViewLight(networking: self.network)
                                 .onDisappear {
                                     self.navigationButtonID = UUID()
                                 }
@@ -99,11 +99,11 @@ struct MainWeatherView: View {
                             }
                             userEngagement.points += 1
                             UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-                            if userEngagement.points > 50 {
-                                DispatchQueue.main.async {
-                                    requestReview()
-                                }
-                            }
+//                            if userEngagement.points > 50 {
+//                                DispatchQueue.main.async {
+//                                    requestReview()
+//                                }
+//                            }
                         }
                         .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
@@ -111,6 +111,7 @@ struct MainWeatherView: View {
                                     showingSheet.toggle()
                                 }
                                 .id(self.navigationButtonID)
+                                .foregroundColor(Color.secondary)
                             }
                             
                             ToolbarItem(placement: .navigationBarTrailing) {
@@ -118,12 +119,14 @@ struct MainWeatherView: View {
                                     Image(systemName: "gearshape")
                                         .imageScale(.large)
                                 }
+                                .foregroundColor(Color.secondary)
                             }
                         }
+
                     
                     
                         .sheet(isPresented: $showingSheet) {
-                            LocationView(networking: self.network)
+                            LocationViewDark(networking: self.network)
                                 .onDisappear {
                                     self.navigationButtonID = UUID()
                                 }
@@ -198,7 +201,7 @@ struct MainWeatherViewLight: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             VStack {
                 
@@ -411,9 +414,11 @@ struct MainWeatherViewDark: View {
                 Spacer()
                 HStack{
                     Label("Apple Weather", systemImage: "apple.logo")
-                        .foregroundColor(.secondary)
-                    
+                        .foregroundColor(Color.secondary)
+
                     Link("Data Sources", destination: URL(string: "https://developer.apple.com/weatherkit/data-source-attribution/")!)
+                        .foregroundColor(Color.secondary)
+
                     
                 }
             }

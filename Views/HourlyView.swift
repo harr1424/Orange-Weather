@@ -11,10 +11,12 @@ struct HourlyView: View {
         
         if colorScheme == .light {
             HourlyViewLight(hourly: hourly)
+                .cornerRadius(10)
         }
         
         else {
             HourlyViewDark(hourly: hourly)
+                .cornerRadius(10)
         }
     }
 }
@@ -24,7 +26,7 @@ struct HourlyViewLight: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.white, .orange]),  startPoint: UnitPoint(x: 0.3, y: 0.4), endPoint: .bottom)
                 .ignoresSafeArea()
             HStack {
                 VStack{
@@ -34,9 +36,8 @@ struct HourlyViewLight: View {
                     Image(systemName: hourly.symbolName)
                         .resizable()
                         .aspectRatio( contentMode: .fit)
-                        .scaleEffect(0.5)
+                        .scaleEffect(0.9)
                         .foregroundColor(.secondary)
-                        .frame(width: 100)
                     Spacer()
                 }
                 
@@ -50,25 +51,25 @@ struct HourlyViewLight: View {
                     Text("\(hourly.condition.description)")
                         .foregroundColor(.secondary)
                     
-                    Text("Wind \(hourly.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(hourly.wind.getAbbreviatedDirections())")
+                    Text("\(hourly.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(hourly.wind.getAbbreviatedDirections())")
                         .foregroundColor(.secondary)
                     
-                    Text("UV Index \(hourly.uvIndex.value) \(hourly.uvIndex.category.description)")
+                    Text("UV \(hourly.uvIndex.value) \(hourly.uvIndex.category.description)")
                         .foregroundColor(.secondary)
                     
                     
                     if (hourly.precipitationChance * 100) > 0 {
         
-                        Text("\(String(format: "%.0f", hourly.precipitationChance * 100))% chance of \(hourly.getPrecipitationType())")
+                        Text("\(String(format: "%.0f", hourly.precipitationChance * 100))% \(hourly.getPrecipitationType())")
                             .foregroundColor(.secondary)
                         
                     }
                 }
-                
-                Spacer()
-                
             }
+            .padding()
         }
+        .frame(height: 150)
+        .background(Blur(style: .systemMaterial))
     }
 }
 
@@ -81,12 +82,12 @@ struct HourlyViewDark: View {
                 Text("\(hourly.date.getFormattedDate(format: "E h:mm a"))")
                     .fontWeight(.bold)
                     .foregroundColor(.secondary)
+                    .padding(.leading)
                 Image(systemName: hourly.symbolName)
                     .resizable()
                     .aspectRatio( contentMode: .fit)
-                    .scaleEffect(0.5)
+                    .scaleEffect(0.8)
                     .foregroundColor(.secondary)
-                    .frame(width: 100)
                 Spacer()
             }
             
@@ -100,23 +101,25 @@ struct HourlyViewDark: View {
                 Text("\(hourly.condition.description)")
                     .foregroundColor(.secondary)
                 
-                Text("Wind \(hourly.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(hourly.wind.getAbbreviatedDirections())")
+                Text("\(hourly.wind.speed.formatted(.measurement(width: .abbreviated, usage: .general, numberFormatStyle: .number.precision(.fractionLength(0))))) \(hourly.wind.getAbbreviatedDirections())")
                     .foregroundColor(.secondary)
                 
-                Text("UV Index \(hourly.uvIndex.value) \(hourly.uvIndex.category.description)")
+                
+                Text("UV \(hourly.uvIndex.value) \(hourly.uvIndex.category.description)")
                     .foregroundColor(.secondary)
                 
                 
                 if (hourly.precipitationChance * 100) > 0 {
     
-                    Text("\(String(format: "%.0f", hourly.precipitationChance * 100))% chance of \(hourly.getPrecipitationType())")
+                    Text("\(String(format: "%.0f", hourly.precipitationChance * 100))% \(hourly.getPrecipitationType())")
                         .foregroundColor(.secondary)
                     
                 }
             }
-            
-            Spacer()
-            
+            .padding()
         }
+        .padding()
+        .frame(height: 150)
+        .background(Blur(style: .systemMaterialDark))
     }
 }

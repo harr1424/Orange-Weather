@@ -12,21 +12,34 @@ struct DailyWeatherView: View {
         
         if colorScheme == .light {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
+                LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 
                 let dailyForecast = daily.forecast
                 List(dailyForecast, id: \.date) { forecast in
                     DailyView(daily: forecast)
+                        .listRowBackground(Color.clear)
                 }
+                .environment(\.defaultMinListRowHeight, 150)
                 .navigationTitle("Daily")
+                .listRowBackground(Color.clear)
+                .scrollContentBackground(.hidden)
             }
         } else {
             let dailyForecast = daily.forecast
+            
             List(dailyForecast, id: \.date) { forecast in
                 DailyView(daily: forecast)
+                    .listRowBackground(Color.clear)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(.orange, lineWidth: 1)
+                    )
             }
+            .environment(\.defaultMinListRowHeight, 150)
             .navigationTitle("Daily")
+            .listRowBackground(Color.clear)
+            .scrollContentBackground(.hidden)
         }
     }
 }

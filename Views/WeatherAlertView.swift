@@ -37,7 +37,7 @@ struct EmptyAlertListLight: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             
             VStack{
@@ -88,14 +88,19 @@ struct WeatherAlertViewLight: View {
     var body: some View {
         
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .center, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             
             if let currAlerts = alerts {
                 List(currAlerts, id: \.detailsURL) { alert in
-                    AlertView(alert: alert)
+                    AlertViewLight(alert: alert)
+                        .listRowBackground(Color.clear)
+                        .cornerRadius(10)
+
                 }
                 .navigationTitle("Alerts")
+                .listRowBackground(Color.clear)
+                .scrollContentBackground(.hidden)
             }
         }
         
@@ -111,9 +116,17 @@ struct WeatherAlertViewDark: View {
         VStack {
             if let currAlerts = alerts {
                 List(currAlerts, id: \.detailsURL) { alert in
-                    AlertView(alert: alert)
+                    AlertViewDark(alert: alert)
+                        .listRowBackground(Color.clear)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(.orange, lineWidth: 1)
+                        )
                 }
                 .navigationTitle("Alerts")
+                .environment(\.defaultMinListRowHeight, 150)
+                .listRowBackground(Color.clear)
+                .scrollContentBackground(.hidden)
             }
         }
     }
