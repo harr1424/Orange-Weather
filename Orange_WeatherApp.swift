@@ -85,6 +85,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct Orange_WeatherApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     @StateObject private var accentColorManager = AccentColorManager()
 
     var body: some Scene {
