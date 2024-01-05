@@ -3,16 +3,15 @@ import StoreKit
 import WeatherKit
 
 struct HourlyWeatherView: View {
-    
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    
+    @EnvironmentObject var accentColorManager: AccentColorManager
     var hourly: Forecast<HourWeather>
     
     var body: some View {
         
         if colorScheme == .light {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .top, endPoint: .bottom)
+                LinearGradient(gradient: Gradient(colors: [.white, accentColorManager.accentColor]), startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 
                 let hourlyForecast = hourly.futureElements()
@@ -24,7 +23,7 @@ struct HourlyWeatherView: View {
                 .navigationTitle("Hourly")
                 .listRowBackground(Color.clear)
                 .scrollContentBackground(.hidden)
-                
+                .accentColor(accentColorManager.accentColor)
             }
         } else {
             
@@ -35,13 +34,14 @@ struct HourlyWeatherView: View {
                     .listRowBackground(Color.clear)
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
-                            .stroke(.orange, lineWidth: 1)
+                            .stroke(accentColorManager.accentColor, lineWidth: 1)
                     )
             }
             .environment(\.defaultMinListRowHeight, 150)
             .navigationTitle("Hourly")
             .listRowBackground(Color.clear)
             .scrollContentBackground(.hidden)
+            .accentColor(accentColorManager.accentColor)
         }
     }
 }

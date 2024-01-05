@@ -14,6 +14,6 @@ struct ButtonView: View {
             .fontWeight(.bold)
             .frame(width: 100, height: 50, alignment: .center)
             .foregroundStyle(.primary)
-            .background(.ultraThinMaterial)
+            .background(.regularMaterial)
     }
 }

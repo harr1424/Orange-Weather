@@ -6,6 +6,7 @@ import StoreKit
 struct MainWeatherView: View {
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @Environment(\.requestReview) var requestReview
+    @EnvironmentObject var accentColorManager: AccentColorManager
     
     @StateObject var network = Networking()
     @StateObject var networkConn = NetworkStatus()
@@ -57,11 +58,11 @@ struct MainWeatherView: View {
                             }
                             userEngagement.points += 1
                             UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-//                            if userEngagement.points > 50 {
-//                                DispatchQueue.main.async {
-//                                    requestReview()
-//                                }
-//                            }
+                            if userEngagement.points > 50 {
+                                DispatchQueue.main.async {
+                                    requestReview()
+                                }
+                            }
                         }
                         .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
@@ -78,8 +79,6 @@ struct MainWeatherView: View {
                                 }
                             }
                         }
-                    
-                    
                         .sheet(isPresented: $showingSheet) {
                             LocationViewLight(networking: self.network)
                                 .onDisappear {
@@ -99,11 +98,11 @@ struct MainWeatherView: View {
                             }
                             userEngagement.points += 1
                             UserDefaults.standard.set(userEngagement.points, forKey: "Points")
-//                            if userEngagement.points > 50 {
-//                                DispatchQueue.main.async {
-//                                    requestReview()
-//                                }
-//                            }
+                            if userEngagement.points > 50 {
+                                DispatchQueue.main.async {
+                                    requestReview()
+                                }
+                            }
                         }
                         .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
@@ -111,20 +110,16 @@ struct MainWeatherView: View {
                                     showingSheet.toggle()
                                 }
                                 .id(self.navigationButtonID)
-                                .foregroundColor(Color.secondary)
+                                .foregroundColor(accentColorManager.accentColor)
                             }
-                            
                             ToolbarItem(placement: .navigationBarTrailing) {
                                 NavigationLink(destination: SettingsView(networking: network)) {
                                     Image(systemName: "gearshape")
                                         .imageScale(.large)
                                 }
-                                .foregroundColor(Color.secondary)
+                                .foregroundColor(accentColorManager.accentColor)
                             }
                         }
-
-                    
-                    
                         .sheet(isPresented: $showingSheet) {
                             LocationViewDark(networking: self.network)
                                 .onDisappear {
@@ -134,48 +129,55 @@ struct MainWeatherView: View {
                 }
             }
             .navigationViewStyle(StackNavigationViewStyle())
+            .accentColor(accentColorManager.accentColor)
         }
     }
 }
 
 struct NoNetworkView: View {
+    @EnvironmentObject var accentColorManager: AccentColorManager
+    
     var body: some View {
         Image(systemName: "antenna.radiowaves.left.and.right")
             .resizable()
             .aspectRatio( contentMode: .fit)
             .scaleEffect(0.75)
-            .foregroundColor(.orange)
+            .foregroundColor(accentColorManager.accentColor)
+        
         Text("""
         You currently are not connected to the internet. Please connect to Wi-Fi or cellular data in order to use this app.
         """)
         .fontWeight(.bold)
         .font(.system(size: 24))
-        .foregroundColor(.blue)
+        .foregroundColor(accentColorManager.accentColor)
         .multilineTextAlignment(.center)
         .padding()
     }
 }
 
 struct RequestLocationPermissionsView: View {
+    @EnvironmentObject var accentColorManager: AccentColorManager
+    
     var body: some View {
         Image(systemName: "tornado")
             .resizable()
             .aspectRatio( contentMode: .fit)
             .scaleEffect(0.75)
-            .foregroundColor(.orange)
+            .foregroundColor(accentColorManager.accentColor)
         Text("""
         This app requires permission to access your location while the app is in use. It will not work otherwise. Your location
         data is never shared with nor stored by the developer. Please grant location permissions to this app from the settings menu.
         """)
         .fontWeight(.bold)
         .font(.system(size: 24))
-        .foregroundColor(.orange)
+        .foregroundColor(accentColorManager.accentColor)
         .multilineTextAlignment(.center)
         .padding()
     }
 }
 
 struct ErrorUpdatingWeatherView: View {
+    @EnvironmentObject var accentColorManager: AccentColorManager
     @ObservedObject var network: Networking
     @State private var errorUpdatingWeather = true
     
@@ -184,7 +186,7 @@ struct ErrorUpdatingWeatherView: View {
             .resizable()
             .aspectRatio( contentMode: .fit)
             .scaleEffect(0.75)
-            .foregroundColor(.orange)
+            .foregroundColor(accentColorManager.accentColor)
             .alert(isPresented: $errorUpdatingWeather) {
                 Alert(title: Text("Location not Supported"),
                       message: Text("The location you have chosen is not currently supported by Apple WeatherKit."),
@@ -198,10 +200,11 @@ struct ErrorUpdatingWeatherView: View {
 
 struct MainWeatherViewLight: View {
     @ObservedObject var network: Networking
+    @EnvironmentObject var accentColorManager: AccentColorManager
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .top, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.white, accentColorManager.accentColor]), startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             VStack {
                 
@@ -210,7 +213,7 @@ struct MainWeatherViewLight: View {
                         .resizable()
                         .aspectRatio( contentMode: .fit)
                         .scaleEffect(0.75)
-                        .foregroundColor(.orange)
+                        .foregroundColor(accentColorManager.accentColor)
                     
                     HStack {
                         
@@ -289,11 +292,13 @@ struct MainWeatherViewLight: View {
                 }
             }
         }
+        .accentColor(accentColorManager.accentColor)
     }
 }
 
 struct MainWeatherViewDark: View {
     @ObservedObject var network: Networking
+    @EnvironmentObject var accentColorManager: AccentColorManager
     
     var body: some View {
         VStack {
@@ -303,7 +308,7 @@ struct MainWeatherViewDark: View {
                     .resizable()
                     .aspectRatio( contentMode: .fit)
                     .scaleEffect(0.75)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(accentColorManager.accentColor)
                 
                 HStack {
                     
@@ -311,41 +316,41 @@ struct MainWeatherViewDark: View {
                         Text("Temperature")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         Text("Feels Like")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("Wind")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("Humidity")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("Dew Point")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("Visibility")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("Barometer")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("UV Index")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Spacer()
                     }
@@ -354,42 +359,42 @@ struct MainWeatherViewDark: View {
                         Text("\(current.temperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("\(current.apparentTemperature.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("\(current.wind.speed.formatted()) \(current.wind.getAbbreviatedDirections())")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("\(current.humidity * 100, specifier: "%.0f") %")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("\(current.dewPoint.formatted(.measurement(width: .abbreviated, usage: .weather, numberFormatStyle: .number.precision(.fractionLength(0)))))")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("\(current.visibility.formatted())")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("\(current.pressureTrend.description)")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Text("\(current.uvIndex.value) \(current.uvIndex.category.description)")
                             .fontWeight(.bold)
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                         Spacer()
                     }
@@ -397,31 +402,32 @@ struct MainWeatherViewDark: View {
                 HStack {
                     NavigationLink(destination: HourlyWeatherView(hourly: network.hourlyForecast!)) {
                         ButtonView(text: "Hourly")
-                            .foregroundColor(.gray)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                     }
                     NavigationLink(destination: WeatherAlertView(alerts: network.weatherAlerts)) {
                         ButtonView(text: "Alerts \(Int(network.weatherAlerts?.count ?? 0))")
-                            .foregroundColor(.gray)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                     }
                     NavigationLink(destination: DailyWeatherView(daily: (network.dailyForecast)!)) {
                         ButtonView(text: "Daily")
-                            .foregroundColor(.gray)
+                            .foregroundColor(accentColorManager.accentColor)
                         
                     }
                 }
                 Spacer()
                 HStack{
                     Label("Apple Weather", systemImage: "apple.logo")
-                        .foregroundColor(Color.secondary)
-
+                        .foregroundColor(accentColorManager.accentColor)
+                    
                     Link("Data Sources", destination: URL(string: "https://developer.apple.com/weatherkit/data-source-attribution/")!)
-                        .foregroundColor(Color.secondary)
-
+                        .foregroundColor(accentColorManager.accentColor)
+                    
                     
                 }
             }
         }
+        .accentColor(accentColorManager.accentColor)
     }
 }

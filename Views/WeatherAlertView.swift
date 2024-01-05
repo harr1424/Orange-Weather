@@ -3,29 +3,23 @@ import StoreKit
 import WeatherKit
 
 struct WeatherAlertView: View {
-    
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    
     var alerts: [WeatherAlert]?
     
     var body: some View {
         
         if colorScheme == .light {
-            
             if !alerts!.isEmpty {
                 WeatherAlertViewLight(alerts: alerts)
             }
-            
             else {
                 EmptyAlertListLight()
             }
         }
         
         else {
-            
             if !alerts!.isEmpty {
                 WeatherAlertViewDark(alerts: alerts)
-                
             } else {
                 EmptyAlertListDark()
             }
@@ -34,10 +28,11 @@ struct WeatherAlertView: View {
 }
 
 struct EmptyAlertListLight: View {
+    @EnvironmentObject var accentColorManager: AccentColorManager
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .top, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.white, accentColorManager.accentColor]), startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             
             VStack{
@@ -46,7 +41,7 @@ struct EmptyAlertListLight: View {
                     .resizable()
                     .aspectRatio( contentMode: .fit)
                     .scaleEffect(0.75)
-                    .foregroundColor(.orange)
+                    .foregroundColor(accentColorManager.accentColor)
                 Text("There are currently no active weather alerts for your location")
                     .fontWeight(.bold)
                     .font(.system(size: 24))
@@ -57,17 +52,20 @@ struct EmptyAlertListLight: View {
             Spacer()
                 .navigationTitle("Alerts")
         }
+        .accentColor(accentColorManager.accentColor)
     }
 }
 
 struct EmptyAlertListDark: View {
+    @EnvironmentObject var accentColorManager: AccentColorManager
+
     var body: some View {
         VStack {
             Image(systemName: "smoke")
                 .resizable()
                 .aspectRatio( contentMode: .fit)
                 .scaleEffect(0.75)
-                .foregroundColor(.secondary)
+                .foregroundColor(accentColorManager.accentColor)
             Text("There are currently no active weather alerts for your location")
                 .fontWeight(.bold)
                 .font(.system(size: 24))
@@ -78,17 +76,18 @@ struct EmptyAlertListDark: View {
             Spacer()
                 .navigationTitle("Alerts")
         }
+        .accentColor(accentColorManager.accentColor)
     }
 }
 
 struct WeatherAlertViewLight: View {
-    
+    @EnvironmentObject var accentColorManager: AccentColorManager
     var alerts: [WeatherAlert]?
     
     var body: some View {
         
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .top, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.white, accentColorManager.accentColor]), startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             
             if let currAlerts = alerts {
@@ -103,12 +102,12 @@ struct WeatherAlertViewLight: View {
                 .scrollContentBackground(.hidden)
             }
         }
-        
+        .accentColor(accentColorManager.accentColor)
     }
 }
 
 struct WeatherAlertViewDark: View {
-    
+    @EnvironmentObject var accentColorManager: AccentColorManager
     var alerts: [WeatherAlert]?
     
     var body: some View {
@@ -120,7 +119,7 @@ struct WeatherAlertViewDark: View {
                         .listRowBackground(Color.clear)
                         .overlay(
                             RoundedRectangle(cornerRadius: 20)
-                                .stroke(.orange, lineWidth: 1)
+                                .stroke(accentColorManager.accentColor, lineWidth: 1)
                         )
                 }
                 .navigationTitle("Alerts")
@@ -129,6 +128,7 @@ struct WeatherAlertViewDark: View {
                 .scrollContentBackground(.hidden)
             }
         }
+        .accentColor(accentColorManager.accentColor)
     }
 }
 
