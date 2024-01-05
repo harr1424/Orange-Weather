@@ -34,24 +34,14 @@ struct ActiveColorSectionView: View {
     var body: some View {
         Section(header: Text("Active Color")) {
             VStack(alignment: .leading) {
-                ForEach(accentColorManager.colors.indices, id: \.self) { index in
-                    Button(action: {
-                        accentColorManager.accentColorIndex = index
-                    }) {
-                        HStack {
-                            Text(accentColorManager.colors[index].description)
-                            Spacer()
-                            Circle()
-                                .frame(width: 20, height: 20)
-                                .foregroundColor(accentColorManager.accentColorIndex == index ? accentColorManager.colors[index] : .clear)
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.primary, lineWidth: 2)
-                                )
+                ForEach(accentColorManager.colors, id: \.self) { color in
+                    ColorButton(color: color, isSelected: accentColorManager.currentAccentColor == color)
+                        .onTapGesture {
+                            if let index = accentColorManager.colors.firstIndex(of: color) {
+                                accentColorManager.accentColorIndex = index
+                            }
                         }
-                    }
-                    .foregroundColor(accentColorManager.colors[index])
-                    .padding(.vertical, 5)
+                        .padding(.vertical, 5)
                 }
             }
         }
@@ -59,8 +49,25 @@ struct ActiveColorSectionView: View {
     }
 }
 
+struct ColorButton: View {
+    let color: Color
+    let isSelected: Bool
 
-
+    var body: some View {
+        HStack {
+            Text(color.description)
+            Spacer()
+            Circle()
+                .frame(width: 20, height: 20)
+                .foregroundColor(isSelected ? color : .clear)
+                .overlay(
+                    Circle()
+                        .stroke(Color.primary, lineWidth: 2)
+                )
+        }
+        .foregroundColor(color)
+    }
+}
 
 
 struct SettingsView: View {

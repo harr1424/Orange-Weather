@@ -43,6 +43,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
         TokenManager.shared.setDeviceToken(token)
+        print("Set token to \(token)")
         
         let url = URL(string: ApiServer + "register")
         var request = URLRequest(url: url!)

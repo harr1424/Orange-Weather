@@ -213,6 +213,7 @@ struct MainWeatherViewLight: View {
                         .resizable()
                         .aspectRatio( contentMode: .fit)
                         .scaleEffect(0.75)
+                        .shadow(color: accentColorManager.accentColor, radius: 30)
                         .foregroundColor(accentColorManager.accentColor)
                     
                     HStack {
@@ -275,13 +276,13 @@ struct MainWeatherViewLight: View {
                     }
                     HStack {
                         NavigationLink(destination: HourlyWeatherView(hourly: network.hourlyForecast!)) {
-                            ButtonView(text: "Hourly")
+                            ButtonViewLight(text: "Hourly")
                         }
                         NavigationLink(destination: WeatherAlertView(alerts: network.weatherAlerts)) {
-                            ButtonView(text: "Alerts \(Int(network.weatherAlerts?.count ?? 0))")
+                            ButtonViewLight(text: "Alerts \(Int(network.weatherAlerts?.count ?? 0))")
                         }
                         NavigationLink(destination: DailyWeatherView(daily: (network.dailyForecast)!)) {
-                            ButtonView(text: "Daily")
+                            ButtonViewLight(text: "Daily")
                         }
                     }
                     Spacer()
@@ -308,6 +309,7 @@ struct MainWeatherViewDark: View {
                     .resizable()
                     .aspectRatio( contentMode: .fit)
                     .scaleEffect(0.75)
+                    .shadow(color: accentColorManager.accentColor, radius: 30)
                     .foregroundColor(accentColorManager.accentColor)
                 
                 HStack {
@@ -401,17 +403,17 @@ struct MainWeatherViewDark: View {
                 }
                 HStack {
                     NavigationLink(destination: HourlyWeatherView(hourly: network.hourlyForecast!)) {
-                        ButtonView(text: "Hourly")
+                        ButtonViewDark(text: "Hourly")
                             .foregroundColor(accentColorManager.accentColor)
                         
                     }
                     NavigationLink(destination: WeatherAlertView(alerts: network.weatherAlerts)) {
-                        ButtonView(text: "Alerts \(Int(network.weatherAlerts?.count ?? 0))")
+                        ButtonViewDark(text: "Alerts \(Int(network.weatherAlerts?.count ?? 0))")
                             .foregroundColor(accentColorManager.accentColor)
                         
                     }
                     NavigationLink(destination: DailyWeatherView(daily: (network.dailyForecast)!)) {
-                        ButtonView(text: "Daily")
+                        ButtonViewDark(text: "Daily")
                             .foregroundColor(accentColorManager.accentColor)
                         
                     }

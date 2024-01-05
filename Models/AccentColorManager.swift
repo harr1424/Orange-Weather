@@ -2,7 +2,7 @@ import SwiftUI
 
 class AccentColorManager: ObservableObject {
     
-    let colors: [Color] = [.orange, .yellow, .green, .blue, .purple, .brown, .cyan, .indigo, .mint, .teal]
+    let colors: [Color] = [.orange, .yellow, .green, .mint, .teal, .cyan, .blue, .indigo, .purple, .brown, .gray]
 
     @Published var accentColor: Color = .orange 
 
@@ -12,6 +12,10 @@ class AccentColorManager: ObservableObject {
             saveAccentColorIndex()
             objectWillChange.send()
         }
+    }
+    
+    var currentAccentColor: Color {
+        return colors[accentColorIndex]
     }
 
     init() {

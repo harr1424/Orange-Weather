@@ -24,7 +24,7 @@ struct DailyViewLight: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.white, accentColorManager.accentColor]),  startPoint: UnitPoint(x: 0.3, y: 0.4), endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.white, accentColorManager.accentColor]),  startPoint: UnitPoint(x: 0.5, y: 0.5), endPoint: .bottom)
                 .ignoresSafeArea()
 
             HStack {
@@ -36,7 +36,9 @@ struct DailyViewLight: View {
                         .resizable()
                         .aspectRatio( contentMode: .fit)
                         .scaleEffect(0.9)
+                        .shadow(color: accentColorManager.accentColor, radius: 30)
                         .foregroundColor(accentColorManager.accentColor)
+                        .frame(width: 100, height: 100)
                     Spacer()
                 }
                 
@@ -89,8 +91,12 @@ struct DailyViewDark: View {
                     .resizable()
                     .aspectRatio( contentMode: .fit)
                     .scaleEffect(0.9)
+                    .shadow(color: accentColorManager.accentColor, radius: 30)
+                    .shadow(color: accentColorManager.accentColor, radius: 30)
                     .foregroundColor(accentColorManager.accentColor)
                     .padding(.leading)
+                    .frame(width: 100, height: 100)
+
                 Spacer()
             }
             
