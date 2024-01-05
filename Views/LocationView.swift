@@ -3,6 +3,7 @@ import CoreLocation
 
 struct LocationViewLight: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var accentColorManager: AccentColorManager
     @ObservedObject var networking: Networking
     @StateObject var savedLocations = SavedLocations()
     @State private var showingSheet = false
@@ -10,7 +11,7 @@ struct LocationViewLight: View {
     var body: some View {
         NavigationView{
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [.white, .orange]), startPoint: .top, endPoint: .bottom)
+                LinearGradient(gradient: Gradient(colors: [.white, accentColorManager.accentColor]), startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 VStack {
                     Button {
@@ -18,7 +19,7 @@ struct LocationViewLight: View {
                         dismiss()
                     } label: {
                         Label("Current Location", systemImage: "location.fill")
-                            .foregroundColor(Color.secondary)
+                            .foregroundColor(accentColorManager.accentColor)
                     }
                     .font(.title)
                     .padding()
@@ -42,8 +43,6 @@ struct LocationViewLight: View {
                     }
                     .listRowBackground(Color.clear)
                     .scrollContentBackground(.hidden)
-                    
-                    
                 }
                 .sheet(isPresented: $showingSheet) {
                     LocationSearchView(networking: networking, savedLocations: savedLocations)
@@ -57,8 +56,9 @@ struct LocationViewLight: View {
                         }
                     }
                 }
-                .navigationTitle("Locations")
             }
+            .navigationTitle("Locations")
+            .accentColor(accentColorManager.accentColor)
         }
     }
     
@@ -72,6 +72,7 @@ struct LocationViewLight: View {
 }
 
 struct LocationViewDark: View {
+    @EnvironmentObject var accentColorManager: AccentColorManager
     @Environment(\.dismiss) var dismiss
     @ObservedObject var networking: Networking
     @StateObject var savedLocations = SavedLocations()
@@ -86,7 +87,7 @@ struct LocationViewDark: View {
                     dismiss()
                 } label: {
                     Label("Current Location", systemImage: "location.fill")
-                        .foregroundColor(Color.secondary)
+                        .foregroundColor(accentColorManager.accentColor)
                 }
                 .font(.title)
                 .padding()
@@ -101,17 +102,16 @@ struct LocationViewDark: View {
                             dismiss()
                         }) {
                             Text(saved.name)
-                                .foregroundColor(Color.primary)
+                                .foregroundColor(accentColorManager.accentColor)
                                 .font(.title3)
                         }
+                        .padding()
                         .listRowBackground(Color.clear)
                     }
                     .onDelete(perform: deleteLocation)
                 }
                 .listRowBackground(Color.clear)
                 .scrollContentBackground(.hidden)
-                
-                
             }
             .sheet(isPresented: $showingSheet) {
                 LocationSearchView(networking: networking, savedLocations: savedLocations)
@@ -124,15 +124,14 @@ struct LocationViewDark: View {
                     } label: {
                         HStack {
                             Image(systemName: "plus")
-                                .foregroundColor(Color.secondary)
+                                .foregroundColor(accentColorManager.accentColor)
                         }
                     }
                 }
             }
             .navigationTitle("Locations")
-
+            .accentColor(accentColorManager.accentColor)
         }
-        
     }
     
     

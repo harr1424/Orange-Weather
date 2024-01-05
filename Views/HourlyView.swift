@@ -2,11 +2,8 @@ import SwiftUI
 import WeatherKit
 
 struct HourlyView: View {
-    
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    
     var hourly: HourWeather
-    
     var body: some View {
         
         if colorScheme == .light {
@@ -22,11 +19,12 @@ struct HourlyView: View {
 }
 
 struct HourlyViewLight: View {
+    @EnvironmentObject var accentColorManager: AccentColorManager
     var hourly: HourWeather
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.white, .orange]),  startPoint: UnitPoint(x: 0.3, y: 0.4), endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.white, accentColorManager.accentColor]),  startPoint: UnitPoint(x: 0.5, y: 0.5), endPoint: .bottom)
                 .ignoresSafeArea()
             HStack {
                 VStack{
@@ -37,7 +35,10 @@ struct HourlyViewLight: View {
                         .resizable()
                         .aspectRatio( contentMode: .fit)
                         .scaleEffect(0.9)
-                        .foregroundColor(.secondary)
+                        .shadow(color: accentColorManager.accentColor, radius: 30)
+                        .foregroundColor(accentColorManager.accentColor)
+                        .frame(width: 100, height: 100)
+
                     Spacer()
                 }
                 
@@ -70,10 +71,12 @@ struct HourlyViewLight: View {
         }
         .frame(height: 150)
         .background(Blur(style: .systemMaterial))
+        .accentColor(accentColorManager.accentColor)
     }
 }
 
 struct HourlyViewDark: View {
+    @EnvironmentObject var accentColorManager: AccentColorManager
     var hourly: HourWeather
     
     var body: some View {
@@ -87,7 +90,11 @@ struct HourlyViewDark: View {
                     .resizable()
                     .aspectRatio( contentMode: .fit)
                     .scaleEffect(0.8)
-                    .foregroundColor(.secondary)
+                    .shadow(color: accentColorManager.accentColor, radius: 30)
+                    .shadow(color: accentColorManager.accentColor, radius: 30)
+                    .foregroundColor(accentColorManager.accentColor)
+                    .frame(width: 100, height: 100)
+
                 Spacer()
             }
             
@@ -121,5 +128,6 @@ struct HourlyViewDark: View {
         .padding()
         .frame(height: 150)
         .background(Blur(style: .systemMaterialDark))
+        .accentColor(accentColorManager.accentColor)
     }
 }

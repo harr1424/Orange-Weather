@@ -3,6 +3,7 @@ import CoreLocation
 
 struct LocationSearchView: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var accentColorManager: AccentColorManager
     @StateObject var locationService = LocationService()
     @ObservedObject var networking: Networking
     @ObservedObject var savedLocations: SavedLocations
@@ -17,6 +18,7 @@ struct LocationSearchView: View {
             } header: {
                 Text("Search Locations")
                     .font(.headline)
+                    .foregroundColor(accentColorManager.accentColor)
             }
             Section {
                 List {
@@ -26,7 +28,7 @@ struct LocationSearchView: View {
                         case .error(let description):  AnyView(Text("Error: \(description)"))
                         default:  AnyView(EmptyView())
                         }
-                    }.foregroundColor(Color.secondary)
+                    }.foregroundColor(accentColorManager.accentColor)
                     
                     ForEach(locationService.searchResults, id: \.self) { completionResult in
                         Button("\(completionResult.city), \(completionResult.country)") {
@@ -47,11 +49,13 @@ struct LocationSearchView: View {
                                 }
                             }
                         }
+                        .foregroundColor(accentColorManager.accentColor)
+                        .padding()
                     }
                 }
             }
         }
-        .accentColor(Color.secondary)
+        .accentColor(accentColorManager.accentColor)
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Location not Supported"),
             message: Text("The location you have chosen is not currently supported."),

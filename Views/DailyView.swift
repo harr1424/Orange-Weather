@@ -2,11 +2,8 @@ import SwiftUI
 import WeatherKit
 
 struct DailyView: View {
-    
     @Environment(\.colorScheme) var colorScheme: ColorScheme
-    
     var daily: DayWeather
-    
     var body: some View {
         
         if colorScheme == .light {
@@ -22,11 +19,12 @@ struct DailyView: View {
 }
 
 struct DailyViewLight: View {
+    @EnvironmentObject var accentColorManager: AccentColorManager
     var daily: DayWeather
 
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.white, .orange]),  startPoint: UnitPoint(x: 0.3, y: 0.4), endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.white, accentColorManager.accentColor]),  startPoint: UnitPoint(x: 0.5, y: 0.5), endPoint: .bottom)
                 .ignoresSafeArea()
 
             HStack {
@@ -38,7 +36,9 @@ struct DailyViewLight: View {
                         .resizable()
                         .aspectRatio( contentMode: .fit)
                         .scaleEffect(0.9)
-                        .foregroundColor(.secondary)
+                        .shadow(color: accentColorManager.accentColor, radius: 30)
+                        .foregroundColor(accentColorManager.accentColor)
+                        .frame(width: 100, height: 100)
                     Spacer()
                 }
                 
@@ -72,10 +72,12 @@ struct DailyViewLight: View {
         }
         .frame(height: 150)
         .background(Blur(style: .systemMaterial))
+        .accentColor(accentColorManager.accentColor)
     }
 }
 
 struct DailyViewDark: View {
+    @EnvironmentObject var accentColorManager: AccentColorManager
     var daily: DayWeather
 
     var body: some View {
@@ -89,8 +91,12 @@ struct DailyViewDark: View {
                     .resizable()
                     .aspectRatio( contentMode: .fit)
                     .scaleEffect(0.9)
-                    .foregroundColor(.secondary)
+                    .shadow(color: accentColorManager.accentColor, radius: 30)
+                    .shadow(color: accentColorManager.accentColor, radius: 30)
+                    .foregroundColor(accentColorManager.accentColor)
                     .padding(.leading)
+                    .frame(width: 100, height: 100)
+
                 Spacer()
             }
             
@@ -124,6 +130,7 @@ struct DailyViewDark: View {
         .padding()
         .frame(height: 150)
         .background(Blur(style: .systemMaterialDark))
+        .accentColor(accentColorManager.accentColor)
     }
 }
 
