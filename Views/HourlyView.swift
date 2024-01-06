@@ -90,7 +90,8 @@ struct HourlyViewDark: View {
                     .resizable()
                     .aspectRatio( contentMode: .fit)
                     .scaleEffect(0.8)
-                    .shadow(color: accentColorManager.accentColor, radius: 30)
+                    .shadow(color: accentColorManager.accentColor, radius: 10)
+                    .shadow(color: accentColorManager.accentColor, radius: 1)
                     .foregroundColor(accentColorManager.accentColor)
                     .frame(width: 100, height: 100)
 

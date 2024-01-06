@@ -37,6 +37,7 @@ struct LocationViewLight: View {
                                     .foregroundColor(Color.primary)
                                     .font(.title3)
                             }
+                            .padding()
                             .listRowBackground(Color.clear)
                         }
                         .onDelete(perform: deleteLocation)

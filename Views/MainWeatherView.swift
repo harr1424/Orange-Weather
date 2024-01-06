@@ -8,13 +8,14 @@ struct MainWeatherView: View {
     @Environment(\.requestReview) var requestReview
     @EnvironmentObject var accentColorManager: AccentColorManager
     
-    @StateObject var network = Networking()
-    @StateObject var networkConn = NetworkStatus()
-    
-    var userEngagement = UserEngagement()
+    @ObservedObject var network = Networking()
+    @ObservedObject var networkConn = NetworkStatus()
+    @ObservedObject var storeKitManager = StoreKitManager()
     
     @State private var showingSheet = false
     @State private var navigationButtonID = UUID()
+    
+    var userEngagement = UserEngagement()
     
     var lat: CLLocationDegrees {
         return self.network.lastLocation?.coordinate.latitude ?? 0
@@ -80,12 +81,30 @@ struct MainWeatherView: View {
                             }
                         }
                         .sheet(isPresented: $showingSheet) {
-                            LocationViewLight(networking: self.network)
-                                .onDisappear {
-                                    self.navigationButtonID = UUID()
+                            if storeKitManager.subscriptionStatus == .subscribed{
+                                LocationViewLight(networking: self.network)
+                                    .onDisappear {
+                                        self.navigationButtonID = UUID()
+                                    }
+                            }
+                            else {
+                                SubscriptionOptionsViewLight()
+                                    .onDisappear {
+                                        self.navigationButtonID = UUID()
+                                    }
+                            }
+                        }
+                        .alert(item: $storeKitManager.alert) { alertItem in
+                            Alert(
+                                title: Text(alertItem.title),
+                                message: alertItem.message.map(Text.init),
+                                dismissButton: .default(Text(alertItem.dismissButtonTitle)) {
+                                    alertItem.action?()
                                 }
+                            )
                         }
                 }
+                
                 
                 else {
                     MainWeatherViewDark(network: network)
@@ -121,10 +140,27 @@ struct MainWeatherView: View {
                             }
                         }
                         .sheet(isPresented: $showingSheet) {
-                            LocationViewDark(networking: self.network)
-                                .onDisappear {
-                                    self.navigationButtonID = UUID()
+                            if storeKitManager.subscriptionStatus == .subscribed{
+                                LocationViewDark(networking: self.network)
+                                    .onDisappear {
+                                        self.navigationButtonID = UUID()
+                                    }
+                            }
+                            else {
+                                SubscriptionOptionsViewDark()
+                                    .onDisappear {
+                                        self.navigationButtonID = UUID()
+                                    }
+                            }
+                        }
+                        .alert(item: $storeKitManager.alert) { alertItem in
+                            Alert(
+                                title: Text(alertItem.title),
+                                message: alertItem.message.map(Text.init),
+                                dismissButton: .default(Text(alertItem.dismissButtonTitle)) {
+                                    alertItem.action?()
                                 }
+                            )
                         }
                 }
             }
@@ -142,6 +178,8 @@ struct NoNetworkView: View {
             .resizable()
             .aspectRatio( contentMode: .fit)
             .scaleEffect(0.75)
+            .shadow(color: accentColorManager.accentColor, radius: 30)
+            .shadow(color: accentColorManager.accentColor, radius: 5)
             .foregroundColor(accentColorManager.accentColor)
         
         Text("""
@@ -163,6 +201,8 @@ struct RequestLocationPermissionsView: View {
             .resizable()
             .aspectRatio( contentMode: .fit)
             .scaleEffect(0.75)
+            .shadow(color: accentColorManager.accentColor, radius: 30)
+            .shadow(color: accentColorManager.accentColor, radius: 5)
             .foregroundColor(accentColorManager.accentColor)
         Text("""
         This app requires permission to access your location while the app is in use. It will not work otherwise. Your location
@@ -186,6 +226,8 @@ struct ErrorUpdatingWeatherView: View {
             .resizable()
             .aspectRatio( contentMode: .fit)
             .scaleEffect(0.75)
+            .shadow(color: accentColorManager.accentColor, radius: 30)
+            .shadow(color: accentColorManager.accentColor, radius: 5)
             .foregroundColor(accentColorManager.accentColor)
             .alert(isPresented: $errorUpdatingWeather) {
                 Alert(title: Text("Location not Supported"),
@@ -310,6 +352,7 @@ struct MainWeatherViewDark: View {
                     .aspectRatio( contentMode: .fit)
                     .scaleEffect(0.75)
                     .shadow(color: accentColorManager.accentColor, radius: 30)
+                    .shadow(color: accentColorManager.accentColor, radius: 5)
                     .foregroundColor(accentColorManager.accentColor)
                 
                 HStack {
