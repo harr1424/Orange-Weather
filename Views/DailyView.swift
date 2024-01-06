@@ -92,7 +92,6 @@ struct DailyViewDark: View {
                     .aspectRatio( contentMode: .fit)
                     .scaleEffect(0.9)
                     .shadow(color: accentColorManager.accentColor, radius: 30)
-                    .shadow(color: accentColorManager.accentColor, radius: 30)
                     .foregroundColor(accentColorManager.accentColor)
                     .padding(.leading)
                     .frame(width: 100, height: 100)
