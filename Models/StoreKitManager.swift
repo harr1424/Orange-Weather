@@ -13,7 +13,7 @@ enum SubscriptionStatus: Equatable {
             return false
         }
     }
-
+    
     case subscribed
     case notSubscribed
     case error(Error)
@@ -144,20 +144,17 @@ class StoreKitManager: NSObject, ObservableObject, SKProductsRequestDelegate, SK
 
 extension StoreKitManager: SKRequestDelegate {
     func requestDidFinish(_ request: SKRequest) {
-        // Receipt refresh request completed, perform additional validation
-        
         if let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
            FileManager.default.fileExists(atPath: appStoreReceiptURL.path) {
-            subscriptionStatus = .subscribed
+            self.subscriptionStatus = .subscribed
         } else {
-            subscriptionStatus = .notSubscribed
+            self.subscriptionStatus = .notSubscribed
         }
     }
     
     func request(_ request: SKRequest, didFailWithError error: Error) {
-        // Receipt refresh request failed, handle the error
-        subscriptionStatus = .error(error)
-        alert = AlertItem(
+        self.subscriptionStatus = .error(error)
+        self.alert = AlertItem(
             title: "Unable to Check Subscription Status",
             message: error.localizedDescription,
             dismissButtonTitle: "OK"

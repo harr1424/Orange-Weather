@@ -8,9 +8,9 @@ struct MainWeatherView: View {
     @Environment(\.requestReview) var requestReview
     @EnvironmentObject var accentColorManager: AccentColorManager
     
-    @ObservedObject var network = Networking()
-    @ObservedObject var networkConn = NetworkStatus()
-    @ObservedObject var storeKitManager = StoreKitManager()
+    @StateObject var network = Networking()
+    @StateObject var networkConn = NetworkStatus()
+    @StateObject var storeKitManager = StoreKitManager.shared
     
     @State private var showingSheet = false
     @State private var navigationButtonID = UUID()
