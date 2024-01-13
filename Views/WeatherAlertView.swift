@@ -91,7 +91,7 @@ struct WeatherAlertViewLight: View {
                 .ignoresSafeArea()
             
             if let currAlerts = alerts {
-                List(currAlerts, id: \.detailsURL) { alert in
+                List(currAlerts, id: \.summary) { alert in
                     AlertViewLight(alert: alert)
                         .listRowBackground(Color.clear)
                         .cornerRadius(10)
@@ -114,7 +114,7 @@ struct WeatherAlertViewDark: View {
         
         VStack {
             if let currAlerts = alerts {
-                List(currAlerts, id: \.detailsURL) { alert in
+                List(currAlerts, id: \.summary) { alert in
                     AlertViewDark(alert: alert)
                         .listRowBackground(Color.clear)
                         .overlay(
@@ -123,7 +123,6 @@ struct WeatherAlertViewDark: View {
                         )
                 }
                 .navigationTitle("Alerts")
-                .environment(\.defaultMinListRowHeight, 150)
                 .listRowBackground(Color.clear)
                 .scrollContentBackground(.hidden)
             }

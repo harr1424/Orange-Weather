@@ -1,4 +1,5 @@
 import SwiftUI
+import RevenueCat
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     
@@ -86,9 +87,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct Orange_WeatherApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
     @StateObject private var accentColorManager = AccentColorManager()
-
+    
+    init() {
+        Purchases.configure(withAPIKey: RcKey)
+        Purchases.logLevel = .warn
+    }
+    
     var body: some Scene {
         WindowGroup {
             MainWeatherView()

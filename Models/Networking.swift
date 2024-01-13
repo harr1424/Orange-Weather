@@ -96,6 +96,7 @@ class Networking: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.dailyForecast = daily
                     self.weatherAlerts = alerts
                 }
+                
             } catch {
                 // Handle the error if necessary
                 errorUpdatingWeather = true
