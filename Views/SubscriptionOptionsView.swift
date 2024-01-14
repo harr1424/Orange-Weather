@@ -210,10 +210,8 @@ struct SubscriptionOptionsViewDark: View {
                         if customer?.entitlements["AddLocation"]?.isActive == true {
                             print("Purchase succeeded")
                             
-                            alertTitle = "Thank You!"
-                            alertMessage = "Your are now subscribed"
-                            showAlert = true
-                            
+                            presentationMode.wrappedValue.dismiss()
+
                         }
                         else {
                             print("Purchase completed without error, but user does not have entitlement")

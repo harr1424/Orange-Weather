@@ -82,6 +82,10 @@ struct SettingsView: View {
                 ActiveColorSectionView()
             }
             
+            HStack(spacing: 20) {
+                Link("Privacy Policy", destination: URL(string: "https://jharrington.io/orange-weather-privacy")!)
+                Link("Terms of Use", destination: URL(string: "https://jharrington.io/end-user-license-agreement")!)
+            }
         }
         .navigationTitle("Settings")
         .accentColor(accentColorManager.accentColor)

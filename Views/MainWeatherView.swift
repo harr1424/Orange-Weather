@@ -295,9 +295,12 @@ struct MainWeatherView: View {
                             }
                         }
                         Spacer()
-                        HStack{
-                            Label("Apple Weather", systemImage: "apple.logo")
-                            Link("Data Sources", destination: URL(string: "https://developer.apple.com/weatherkit/data-source-attribution/")!)
+                        Link(destination: URL(string: "https://developer.apple.com/weatherkit/data-source-attribution/")!) {
+                            HStack {
+                                Image(systemName: "applelogo")
+                                Text("Apple Weather")
+                            }
+                            .foregroundColor(.primary)
                         }
                     }
                 }
@@ -429,14 +432,12 @@ struct MainWeatherView: View {
                         }
                     }
                     Spacer()
-                    HStack{
-                        Label("Apple Weather", systemImage: "apple.logo")
-                            .foregroundColor(accentColorManager.accentColor)
-                        
-                        Link("Data Sources", destination: URL(string: "https://developer.apple.com/weatherkit/data-source-attribution/")!)
-                            .foregroundColor(accentColorManager.accentColor)
-                        
-                        
+                    Link(destination: URL(string: "https://developer.apple.com/weatherkit/data-source-attribution/")!) {
+                        HStack {
+                            Image(systemName: "applelogo")
+                            Text("Apple Weather")
+                        }
+                        .accentColor(accentColorManager.accentColor)
                     }
                 }
             }
